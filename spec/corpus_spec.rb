@@ -1,4 +1,4 @@
-require '../lib/corpus'
+require 'corpus'
 RSpec.describe Corpus do
   let(:url) { 'https://www.youtube.com/watch?v=Oyio4UKLjLA' }
 
