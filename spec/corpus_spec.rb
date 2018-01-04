@@ -18,6 +18,10 @@ RSpec.describe Corpus do
     it { expect(download_data(url, '沒多一個檔案')).to eq 'error'   }
   end
 
+  context '掠無corpus Server Error' do
+    it { expect(download_data(url, '重試失敗')).to eq 'retry-error'   }
+  end
+
   context '掠有字幕' do
     it { expect(log_data('下載結果', '多一個字幕檔')).to eq 'logged with subtitle'   }
   end

@@ -13,6 +13,8 @@ module Corpus
     begin
       if (result=='多一個檔案')
         'success'
+      elsif result == '重試失敗'
+        retry_fail
       else
         'error'
       end
