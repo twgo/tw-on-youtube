@@ -21,6 +21,6 @@ module Corpus
   end
 
   def has_audio(data)
-    # '字幕掠成功'
+    # '聲音掠成功'
   end
 end
