@@ -1,2 +1,2 @@
-class Video < ApplicationRecord
-end
+# class Video < ApplicationRecord
+# end
