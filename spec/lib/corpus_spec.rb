@@ -9,10 +9,13 @@ RSpec.describe Corpus do
   context '有掠corpus動作' do
     let(:載存影片){double('get_corpus', url: :url)}
 
-    it do
+    it '有載影片' do
         allow(載存影片).to receive(:載影片){'掠corpus動作完成'}
-        allow(載存影片).to receive(:存記錄){'存corpus動作完成'}
         expect(載存影片.載影片).to eq '掠corpus動作完成'
+    end
+
+    it '有存影片' do
+        allow(載存影片).to receive(:存記錄){'存corpus動作完成'}
         expect(載存影片.存記錄).to eq '存corpus動作完成'
     end
   end
