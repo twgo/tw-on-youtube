@@ -16,11 +16,11 @@ module Corpus
     # '存檔成功'
   end
 
-  def has_cc(data)
-    # '字幕掠成功'
-  end
-
-  def has_audio(data)
-    # '聲音掠成功'
-  end
+  # def has_cc(data)
+  #   # '字幕掠成功'
+  # end
+  #
+  # def has_audio(data)
+  #   # '聲音掠成功'
+  # end
 end

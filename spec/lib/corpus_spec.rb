@@ -8,51 +8,26 @@ RSpec.describe Corpus do
 
   context '有掠corpus動作' do
     it do
-        下載 = spy('youtube-dl')
-        存檔 = spy('log_data')
-        allow(下載).to receive(:message){'掠corpus動作完成'}
-        allow(存檔).to receive(:message){'存corpus動作完成'}
-        expect(get_corpus(url)).to eq '執行完成'
+        載存影片 = double('get_corpus', url: :url)
+        allow(載存影片).to receive(:載影片){'掠corpus動作完成'}
+        allow(載存影片).to receive(:存記錄){'存corpus動作完成'}
+        expect(載存影片.載影片).to eq '掠corpus動作完成'
+        expect(載存影片.存記錄).to eq '存corpus動作完成'
     end
   end
 
-  context '掠影片' do
+  context '載影片' do
     it '掠有' do
-      下載 = spy('youtube-dl')
-      allow(下載).to receive(:message){'掠有影片'}
-      expect(download_data(url)).to eq '掠影片成功'
+      下載影片 = double('download_data', url: :url)
+      allow(下載影片).to receive(:水管下載){'掠有影片'}
+      expect(下載影片.水管下載).to eq '掠有影片'
     end
 
     it '掠無' do
-      下載 = spy('youtube-dl')
-      allow(下載).to receive(:message){'掠無影片'}
-      expect{download_data(url)}.to raise_error '掠影片失敗'
-    end
-  end
+      下載影片 = double('download_data', url: :url)
 
-  context '掠字幕' do
-    it '掠有' do
-      下載字幕 = spy('youtube-dl-cc')
-      allow(下載字幕).to receive(:message){'字幕掠有'}
-      expect(has_cc(下載字幕)).to eq '字幕掠成功'
-    end
-    it '掠無' do
-      下載字幕 = spy('youtube-dl-cc')
-      allow(下載字幕).to receive(:message){'字幕掠無'}
-      expect(has_cc(下載字幕)).to eq '字幕掠失敗'
-    end
-  end
-
-  context '掠聲音' do
-    it '掠有' do
-      下載聲音 = spy('youtube-dl-audio')
-      allow(下載聲音).to receive(:message){'聲音掠有'}
-      expect(has_audio(下載聲音)).to eq '聲音掠成功'
-    end
-    it '掠無' do
-      下載聲音 = spy('youtube-dl-audio')
-      allow(下載聲音).to receive(:message){'聲音掠無'}
-      expect(has_audio(下載聲音)).to eq '聲音掠失敗'
+      allow(下載影片).to receive(:水管下載){'掠無影片'}
+      expect(下載影片.水管下載).to eq '掠無影片'
     end
   end
 end
