@@ -1,5 +1,5 @@
-require 'corpus'
-RSpec.describe Corpus do
+require 'rails_helper'
+RSpec.describe DownloadWorker, type: :worker do
   let(:載存影片){spy('get_corpus')}
   let(:載影片){spy('download_data')}
   let(:成功記錄){ 0 }

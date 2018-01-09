@@ -5,6 +5,7 @@
 <table>
   <thead>
     <tr>
+      <th>狀態</th>
       <th>片名</th>
       <th>識別碼</th>
       <th>片長</th>
@@ -17,15 +18,23 @@
   <tbody>
     <% @videos.each do |video| %>
       <tr>
-        <td><%= link_to '下載中...', video.url, target: '_blank' %></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td></td>
-        <td><%# link_to 'Show', video %></td>
-        <td><%# link_to 'Edit', edit_video_path(video) %></td>
-        <td><%# link_to 'Destroy', video, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <% if (video.status && (video.status =='downloaded')) %>
+          <td><%= '✅' %></td>
+          <td><%= link_to video.title, video.url, target: '_blank' %></td>
+          <td><%= video.yid %></td>
+          <td><%= Time.at(video.duration.to_i).utc.strftime("%H:%M:%S") %></td>
+          <td><%= video.filename && video.filename.split(".").last %></td>
+          <td><%= video.uploader %></td>
+          <td><%= video.upload_date %></td>
+        <% else %>
+          <td><%= '🔴' %></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+          <td></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
