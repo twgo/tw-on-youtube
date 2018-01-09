@@ -13,6 +13,15 @@
 ActiveRecord::Schema.define(version: 20180104145920) do
 
   create_table "videos", force: :cascade do |t|
+    t.string "url"
+    t.string "yid"
+    t.string "title"
+    t.string "thumbnail"
+    t.string "description"
+    t.string "duration"
+    t.string "filename"
+    t.string "uploader"
+    t.string "upload_date"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -5,16 +5,27 @@
 <table>
   <thead>
     <tr>
-      <th colspan="3"></th>
+      <th>片名</th>
+      <th>識別碼</th>
+      <th>片長</th>
+      <th>格式</th>
+      <th>上傳者</th>
+      <th>上傳日期</th>
     </tr>
   </thead>
 
   <tbody>
     <% @videos.each do |video| %>
       <tr>
-        <td><%= link_to 'Show', video %></td>
-        <td><%= link_to 'Edit', edit_video_path(video) %></td>
-        <td><%= link_to 'Destroy', video, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= link_to '下載中...', video.url, target: '_blank' %></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td><%# link_to 'Show', video %></td>
+        <td><%# link_to 'Edit', edit_video_path(video) %></td>
+        <td><%# link_to 'Destroy', video, method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>

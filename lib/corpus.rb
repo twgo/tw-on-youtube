@@ -4,7 +4,6 @@ module Corpus
   def get_corpus(url)
     # data = download_data(url)
     # log_data(data)
-    # '執行完成'
   end
 
   def download_data(url)
