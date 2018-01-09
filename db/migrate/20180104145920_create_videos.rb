@@ -10,6 +10,7 @@ class CreateVideos < ActiveRecord::Migration[5.1]
       t.string :filename
       t.string :uploader
       t.string :upload_date
+      t.string :status
 
       t.timestamps
     end

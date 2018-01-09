@@ -22,6 +22,7 @@ ActiveRecord::Schema.define(version: 20180104145920) do
     t.string "filename"
     t.string "uploader"
     t.string "upload_date"
+    t.string "status"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
