@@ -9,31 +9,29 @@
       <th>片名</th>
       <th>識別碼</th>
       <th>片長</th>
-      <th>格式</th>
       <th>上傳者</th>
       <th>上傳日期</th>
+      <th>KBit/s</th>
+      <th>已下載</th>
+      <th>下載時間</th>
     </tr>
   </thead>
 
   <tbody>
     <% @videos.each do |video| %>
       <tr>
+        <td><%= video.status %></td>
         <% if (video.status && (video.status =='downloaded')) %>
-          <td><%= '✅' %></td>
-          <td><%= link_to video.title, video.url, target: '_blank' %></td>
+          <td><%= link_to video.title.truncate(10), video.url, target: '_blank' %></td>
           <td><%= video.yid %></td>
           <td><%= Time.at(video.duration.to_i).utc.strftime("%H:%M:%S") %></td>
-          <td><%= video.filename && video.filename.split(".").last %></td>
           <td><%= video.uploader %></td>
           <td><%= video.upload_date %></td>
+          <td><%= video.abr %></td>
+          <td><%= video.tags %></td>
+          <td><%= video.created_at.localtime.to_formatted_s(:short) %></td>
         <% else %>
-          <td><%= '🔴' %></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
-          <td></td>
+          <td><%= link_to video.url.truncate(10), video.url, target: '_blank' %></td>
         <% end %>
       </tr>
     <% end %>
