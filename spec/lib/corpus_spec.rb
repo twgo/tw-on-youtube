@@ -1,32 +1,31 @@
 require 'corpus'
 RSpec.describe Corpus do
-  let(:url) { 'https://www.youtube.com/watch?v=Oyio4UKLjLA' }
+  let(:載存影片){spy('get_corpus')}
+  let(:載影片){spy('download_data')}
+  let(:成功記錄){ 0 }
+  let(:失敗記錄){ 0 }
 
-  before(:each) do
-    extend Corpus
+  context '有掠corpus動作' do
+    it '有跑載影片一次' do
+      allow(載存影片).to receive(:載影片)
+      載存影片
+      expect(載存影片).to have_received(:載影片).once
+    end
   end
 
-  context 'Can run all works to get corpus' do
-    it { expect(get_corpus(url)).to eq 'finished'  }
-  end
+  context '載影片進資料庫' do
+    it '成功' do
+      allow(載存影片).to receive(:載影片)
+      expect(成功記錄).to eq 0
+      載存影片
+      expect(成功記錄).to eq 1
+    end
 
-  context '掠有corpus' do
-    it { expect(download_data(url, '多一個檔案')).to eq 'success'   }
-  end
-
-  context '掠無corpus' do
-    it { expect(download_data(url, '沒多一個檔案')).to eq 'error'   }
-  end
-
-  context '掠無corpus Server Error' do
-    it { expect(download_data(url, '重試失敗')).to eq 'retry-error'   }
-  end
-
-  context '掠有字幕' do
-    it { expect(log_data('下載結果', '多一個字幕檔')).to eq 'logged with subtitle'   }
-  end
-
-  context '掠無字幕' do
-    it { expect(log_data('下載結果', '沒多一個字幕檔')).to eq 'logged'   }
+    it '失敗' do
+      allow(載存影片).to receive(:載影片)
+      expect(失敗記錄).to eq 0
+      載存影片
+      expect(失敗記錄).to eq 1
+    end
   end
 end

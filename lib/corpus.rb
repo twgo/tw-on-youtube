@@ -2,42 +2,25 @@ module Corpus
   require 'youtube-dl.rb'
 
   def get_corpus(url)
-    result='執行結果'
-    srt=has_srt
-    log_data(download_data(url, result), srt)
-    'finished'
+    # data = download_data(url)
+    # log_data(data)
+    # '執行完成'
   end
 
-  def download_data(url, result)
-    tries = 3
-    begin
-      if (result=='多一個檔案')
-        'success'
-      elsif result == '重試失敗'
-        retry_fail
-      else
-        'error'
-      end
-    rescue
-      tries -= 1
-      if tries > 0
-        retry
-      else
-        'retry-error'
-      end
-    end
+  def download_data(url)
+    # 下載 YoutubeDL.download url, options
+    # '掠影片成功'
   end
 
-  def log_data(data, srt)
-    # Download.create();
-    if (srt == '多一個字幕檔')
-      'logged with subtitle'
-    else
-      'logged'
-    end
+  def log_data(data)
+    # '存檔成功'
   end
 
-  def has_srt
-    '有字幕'
-  end
+  # def has_cc(data)
+  #   # '字幕掠成功'
+  # end
+  #
+  # def has_audio(data)
+  #   # '聲音掠成功'
+  # end
 end
