@@ -60,9 +60,9 @@ class DownloadWorker
      unless File.directory?(dirname)
        FileUtils.mkdir_p(dirname)
      end
-     uploadername = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-     unless File.directory?(uploadername)
-       FileUtils.mkdir_p(uploadername)
+     uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
+     unless File.directory?(uploader_dirname)
+       FileUtils.mkdir_p(uploader_dirname)
      end
      FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
    end if downloaded_files.any?

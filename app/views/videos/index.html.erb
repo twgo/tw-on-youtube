@@ -28,7 +28,7 @@
           <td><%= video.uploader %></td>
           <td><%= video.upload_date %></td>
           <td><%= video.abr %></td>
-          <td><%= video.tags %></td>
+          <td><%= file_link(video) %></td>
           <td><%= video.created_at.localtime.to_formatted_s(:short) %></td>
         <% else %>
           <td><%= link_to video.url.truncate(10), video.url, target: '_blank' %></td>
