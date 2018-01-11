@@ -5,16 +5,34 @@
 <table>
   <thead>
     <tr>
-      <th colspan="3"></th>
+      <th>狀態</th>
+      <th>片名</th>
+      <th>識別碼</th>
+      <th>片長</th>
+      <th>上傳者</th>
+      <th>上傳日期</th>
+      <th>KBit/s</th>
+      <th>已下載</th>
+      <th>下載時間</th>
     </tr>
   </thead>
 
   <tbody>
     <% @videos.each do |video| %>
       <tr>
-        <td><%= link_to 'Show', video %></td>
-        <td><%= link_to 'Edit', edit_video_path(video) %></td>
-        <td><%= link_to 'Destroy', video, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= video.status %></td>
+        <% if (video.status && (video.status =='downloaded')) %>
+          <td><%= link_to video.title.truncate(10), video.url, target: '_blank' %></td>
+          <td><%= video.yid %></td>
+          <td><%= Time.at(video.duration.to_i).utc.strftime("%H:%M:%S") %></td>
+          <td><%= video.uploader %></td>
+          <td><%= video.upload_date %></td>
+          <td><%= video.abr %></td>
+          <td><%= file_link(video) %></td>
+          <td><%= video.created_at.localtime.to_formatted_s(:short) %></td>
+        <% else %>
+          <td><%= link_to video.url.truncate(10), video.url, target: '_blank' %></td>
+        <% end %>
       </tr>
     <% end %>
   </tbody>
