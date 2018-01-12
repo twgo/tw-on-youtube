@@ -19,21 +19,7 @@ class DownloadWorker
     data_formats = params[:data_formats]
 
     data_formats.each do |data_format|
-      options = case data_format
-      when 'opus'
-        {
-        'extract-audio': true,
-        'audio-format': data_format,
-        'audio-quality': 0,
-        }
-      when 'mp4'
-        {
-          'write-sub': true,
-          'format': data_format,
-          'sub-lang': 'zh-TW'
-        }
-      end
-
+      options = youtube_dl_options(data_format)
       data = youtube_dl(url, options)
 
       params = params.merge(data: data, data_format: data_format)
@@ -42,6 +28,22 @@ class DownloadWorker
       update_status_downloaded
     end
     'done: download_data'
+  end
+
+  def youtube_dl_options(data_format)
+    if data_format == 'opus'
+      {
+      'extract-audio': true,
+      'audio-format': 'opus',
+      'audio-quality': 0
+      }
+    elsif data_format == 'mp4'
+      {
+        'write-sub': true,
+        'format': 'mp4',
+        'sub-lang': 'zh-TW'
+      }
+    end
   end
 
   def youtube_dl(url, options)
@@ -64,9 +66,8 @@ class DownloadWorker
   def	move_file(params={})
    data = params[:data]
    data_format = params[:data_format]
-   downloaded_files = Dir[File.join("*.#{data_format}")]
-
-   downloaded_files.each do |downloaded_filename|
+   @downloaded_files = Dir[File.join("*.#{data_format}")]
+   @downloaded_files.each do |downloaded_filename|
      dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}")
      unless File.directory?(dirname)
        FileUtils.mkdir_p(dirname)
@@ -76,7 +77,7 @@ class DownloadWorker
        FileUtils.mkdir_p(uploader_dirname)
      end
      FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-   end if downloaded_files.any?
+   end if @downloaded_files.any?
    'done: move_file'
   end
 
