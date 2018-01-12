@@ -7,12 +7,10 @@ class DownloadWorker
 
   def perform(*args)
     url = Video.last.url
-    get_corpus(url)
-  end
-
-  def get_corpus(url)
     params = {data_formats: ['mp4', 'opus'], url: url}
+
     download_data(params)
+
     'done: get_corpus'
   end
 

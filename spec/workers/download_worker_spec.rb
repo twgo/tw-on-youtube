@@ -11,10 +11,10 @@ RSpec.describe DownloadWorker, type: :worker do
     Video.last.delete
   end
 
-  it '.get_corpus' do
+  it 'run download_data once' do
     allow(@worker).to receive(:download_data)
 
-    expect(@worker.get_corpus(@url)).to eq "done: get_corpus"
+    expect(@worker.perform).to eq "done: get_corpus"
   end
 
   it '.download_data' do
@@ -26,6 +26,7 @@ RSpec.describe DownloadWorker, type: :worker do
   end
 
   context '.move_files' do
+    before do @worker.move_files(@params) end
     it 'wont leave mp4' do expect(Dir[File.join("*.mp4")]).to eq [] end
     it 'wont leave opus' do expect(Dir[File.join("*.opus")]).to eq [] end
     it 'wont leave vtt' do expect(Dir[File.join("*.vtt")]).to eq [] end
