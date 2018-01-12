@@ -13,6 +13,7 @@ class DownloadWorker
   def get_corpus(url)
     params = {data_formats: ['mp4', 'opus'], url: url}
     download_data(params)
+    'done: get_corpus'
   end
 
   def download_data(params={})
@@ -34,10 +35,21 @@ class DownloadWorker
           'sub-lang': 'zh-TW'
         }
       end
-      data = YoutubeDL.download url, options
+
+      data = youtube_dl(url, options)
+
       params = params.merge(data: data, data_format: data_format)
       move_files(params)
       log_data(data)
+    end
+		'done: download_data'
+  end
+
+  def youtube_dl(url, options)
+    begin
+      YoutubeDL.download url, options
+    rescue
+      puts 'Download Fail'
     end
   end
 
@@ -50,7 +62,7 @@ class DownloadWorker
     Video.last.update(status: 'downloaded')
   end
 
- def	move_file(params={})
+  def	move_file(params={})
    data = params[:data]
    data_format = params[:data_format]
    downloaded_files = Dir[File.join("*.#{data_format}")]
@@ -66,7 +78,7 @@ class DownloadWorker
      end
      FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
    end if downloaded_files.any?
- end
+  end
 
   def log_data(data)
     Video.last.update(
