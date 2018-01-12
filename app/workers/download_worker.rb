@@ -41,15 +41,16 @@ class DownloadWorker
       params = params.merge(data: data, data_format: data_format)
       move_files(params)
       log_data(data)
+      update_status_downloaded
     end
-		'done: download_data'
+    'done: download_data'
   end
 
   def youtube_dl(url, options)
     begin
       YoutubeDL.download url, options
     rescue
-      puts 'Download Fail'
+      Video.last.update(status: 'Download Fail, YoutubeDL error')
     end
   end
 
@@ -59,7 +60,7 @@ class DownloadWorker
     move_file(params)
     move_file({data: data, data_format: 'vtt'}) if data_format == 'mp4'
 
-    Video.last.update(status: 'downloaded')
+    'done: move_files'
   end
 
   def	move_file(params={})
@@ -78,6 +79,7 @@ class DownloadWorker
      end
      FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
    end if downloaded_files.any?
+   'done: move_file'
   end
 
   def log_data(data)
@@ -109,5 +111,10 @@ class DownloadWorker
     # playlist_title: data.playlist_title,
     # playlist_uploader: data.playlist_uploader,
     # playlist_uploader_id:	data.playlist_uploader_id,
+    'done: log_data'
+  end
+
+  def update_status_downloaded
+    Video.last.update(status: 'downloaded')
   end
 end
