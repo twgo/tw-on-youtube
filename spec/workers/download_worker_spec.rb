@@ -15,9 +15,9 @@ RSpec.describe DownloadWorker, type: :worker do
   end
 
   it '.download_data' do
-    # allow(@worker).to receive(:youtube_dl)
-    # allow(@worker).to receive(:move_files)
-    # allow(@worker).to receive(:log_data)
+    allow(@worker).to receive(:youtube_dl)
+    allow(@worker).to receive(:move_files)
+    allow(@worker).to receive(:log_data)
 
     @worker.download_data(@params)
     expect(Video.last.status).to eq "downloaded"
