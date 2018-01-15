@@ -13,4 +13,10 @@ RSpec.describe VideosController, type: :controller do
       expect(response).to be_success
     end
   end
+
+  describe "POST #create" do
+    it "returns a ParameterMissing response" do
+      expect{ post(:create, {}) }.to raise_error ActionController::ParameterMissing
+    end
+  end
 end
