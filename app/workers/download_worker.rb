@@ -52,7 +52,7 @@ class DownloadWorker
   def youtube_dl(url, options)
     @result = YoutubeDL.download url, options
   rescue => e
-    Video.order("updated_at DESC").find_by(url: url).update(status: "Download Fail, YoutubeDL error,#{e}")
+    Video.order("updated_at DESC").find_by(url: url).update(status: "Download Fail, YoutubeDL error: #{e}")
   end
 
   def move_files(params={})
