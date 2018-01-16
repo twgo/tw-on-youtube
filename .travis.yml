@@ -2,7 +2,10 @@ language: ruby
 rvm:
   - 2.4.2
 before_install:
-  - sudo RUN apt-get update -qq && apt-get install -y build-essential libpq-dev nodejs libav-tools && curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl && chmod a+rx /usr/local/bin/youtube-dl
+  - sudo RUN apt-get update -qq
+  - sudo RUN apt-get install -y build-essential libpq-dev nodejs libav-tools
+  - sudo RUN curl -L https://yt-dl.org/downloads/latest/youtube-dl -o /usr/local/bin/youtube-dl
+  - sudo RUN chmod a+rx /usr/local/bin/youtube-dl
 script:
   - bin/rake db:migrate RAILS_ENV=test
   - bin/rake
