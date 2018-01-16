@@ -20,6 +20,7 @@ class DownloadWorker
 
     data_formats.each do |data_format|
       options = youtube_dl_options(data_format)
+
       data = youtube_dl(url, options)
 
       params = params.merge(data: data, data_format: data_format)
@@ -43,15 +44,15 @@ class DownloadWorker
         'format': 'mp4',
         'sub-lang': 'zh-TW'
       }
+    else
+      'opus or mp4 format only'
     end
   end
 
   def youtube_dl(url, options)
-    begin
-      YoutubeDL.download url, options
-    rescue
-      Video.last.update(status: 'Download Fail, YoutubeDL error')
-    end
+    @result = YoutubeDL.download url, options
+  rescue => e
+    Video.order("updated_at DESC").find_by(url: url).update(status: "Download Fail, YoutubeDL error,#{e}")
   end
 
   def move_files(params={})
@@ -69,13 +70,9 @@ class DownloadWorker
    @downloaded_files = Dir[File.join("*.#{data_format}")]
    @downloaded_files.each do |downloaded_filename|
      dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}")
-     unless File.directory?(dirname)
-       FileUtils.mkdir_p(dirname)
-     end
      uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-     unless File.directory?(uploader_dirname)
-       FileUtils.mkdir_p(uploader_dirname)
-     end
+     FileUtils.mkdir_p(dirname)
+     FileUtils.mkdir_p(uploader_dirname)
      FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
    end if @downloaded_files.any?
    'done: move_file'

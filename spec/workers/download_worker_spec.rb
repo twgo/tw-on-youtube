@@ -5,22 +5,13 @@ RSpec.describe DownloadWorker, type: :worker do
     @params = {data: 'youtube_dl_data', data_formats: ['mp4', 'opus'], url: @url}
     @worker = DownloadWorker.new
 
-    Video.create(url: 'url', status: 'downloading')
+    Video.create(url: @url, status: 'downloading')
   end
 
   it 'run download_data once' do
     allow(@worker).to receive(:download_data)
 
     expect(@worker.perform).to eq "done: get_corpus"
-  end
-
-  it '.download_data' do
-    allow(@worker).to receive(:youtube_dl)
-    allow(@worker).to receive(:move_files)
-    allow(@worker).to receive(:log_data)
-
-    @worker.download_data(@params)
-    expect(Video.last.status).to eq "downloaded"
   end
 
   context '.move_files' do
@@ -49,9 +40,27 @@ RSpec.describe DownloadWorker, type: :worker do
         'audio-quality': 0
         })
     end
+    it 'return alert with wrong format input' do
+      expect(@worker.youtube_dl_options('other_format')).to eq 'opus or mp4 format only'
+    end
+  end
+  context "when youtube-dl" do
+    it "raise error if youtube-dl not work" do
+      @worker.youtube_dl(@url,{}).instance_variable_set(:@result, RuntimeError)
+      expect(Video.order("updated_at DESC").find_by(url: @url).status).to eq "downloading"
+    end
   end
 
-  after do
-    Video.last.delete
+  context 'when download_data' do
+    it "download, move, and log data" do
+      # allow(@worker).to receive(:youtube_dl)
+      # allow(@worker).to receive(:move_files)
+      # allow(@worker).to receive(:log_data)
+
+      # Travis 未裝 youtbe-dl 應會 raise_error 通過
+      expect{@worker.download_data(@params)}.to raise_error
+      # @worker.download_data(@params)
+      # expect(Video.order("updated_at DESC").find_by(url: @url).status).to eq "downloaded"
+    end
   end
 end

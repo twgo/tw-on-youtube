@@ -5,7 +5,7 @@ RSpec.describe VideosHelper, type: :helper do
     Video.create(url: 'url', status: 'downloading', filename: 'filename')
   end
 
-  it 'return blanks while no uploader folder' do
+  it 'return blanks while no files' do
     expect(file_link(Video.last)).to eq '  '
   end
 
