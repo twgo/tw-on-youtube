@@ -45,6 +45,13 @@ RSpec.describe DownloadWorker, type: :worker do
     end
   end
 
+  context "when youtube-dl" do
+    it "raise error if youtube-dl not work" do
+      @worker.youtube_dl(@url,{}).instance_variable_set(:@result, RuntimeError)
+      expect(Video.order("updated_at DESC").find_by(url: @url).status).to_not eq "downloaded"
+    end
+  end
+
   context 'when download_data' do
     it "download, move, and log data" do
       @worker.download_data(@params)
