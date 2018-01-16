@@ -55,8 +55,8 @@ RSpec.describe DownloadWorker, type: :worker do
 
   context 'when download_data' do
     it "download, move, and log data" do
-      # @worker.download_data(@params)
-      # expect(Video.order("updated_at DESC").find_by(url: @url).status).to eq "downloaded"
+      @worker.download_data(@params)
+      expect(Video.order("updated_at DESC").find_by(url: @url).status).to eq "downloaded"
     end
   end
 end
