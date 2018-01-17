@@ -2,10 +2,13 @@ require 'rails_helper'
 RSpec.describe DownloadWorker, type: :worker do
   before do
     @url = 'https://www.youtube.com/watch?v=w5C7S0FlSyM'
+    @url2 = 'https://www.youtube.com/watch?v=IstxG6gapQM'
+
     @params = {data: 'youtube_dl_data', data_formats: ['mp4', 'opus'], url: @url}
     @worker = DownloadWorker.new
 
-    Video.create(url: @url, status: 'downloading')
+    @video1 = Video.create(url: @url, status: 'video 1 downloading')
+    @video2 = Video.create(url: @url2, status: 'video 2 downloading')
   end
 
   it 'run download_data once' do
@@ -46,17 +49,16 @@ RSpec.describe DownloadWorker, type: :worker do
   end
 
   context "when youtube-dl" do
+    let(:video_status) {Video.order("updated_at DESC").find_by(url: @url).status}
+
     it "raise error if youtube-dl not work" do
       allow(@worker).to receive(:run_youtube_dl).and_raise(RuntimeError)
       @worker.youtube_dl(@url, {})
-      expect(Video.order("updated_at DESC").find_by(url: @url).status).to eq "Download Fail, YoutubeDL error: RuntimeError"
+      expect(video_status).to eq "Download Fail, YoutubeDL error: RuntimeError"
     end
-  end
-
-  context 'when download_data' do
     it "download, move, and log data" do
       @worker.download_data(@params)
-      expect(Video.order("updated_at DESC").find_by(url: @url).status).to eq "downloaded"
+      expect(video_status).to eq "downloaded"
     end
   end
 end
