@@ -13,8 +13,6 @@ services:
       - "3000:3000"
     links:
       - redis
-    env_file:
-      - .env
   sidekiq:
     volumes:
       - .:/app
@@ -24,8 +22,6 @@ services:
     command: bundle exec sidekiq
     links:
       - redis
-    env_file:
-      - .env
   redis:
     image: redis
     ports:
