@@ -48,8 +48,10 @@ RSpec.describe DownloadWorker, type: :worker do
     end
   end
 
-  context "when youtube-dl" do
+  context "when download_data with youtube-dl" do
     let(:video_status) {Video.order("updated_at DESC").find_by(url: @url).status}
+    let(:video_path){'./public/download/mp4/KawinSr/10 Sec countdown Male voice-w5C7S0FlSyM.mp4'}
+    let(:audio_path){'./public/download/opus/KawinSr/10 Sec countdown Male voice-w5C7S0FlSyM.opus'}
 
     it "raise error if youtube-dl not work" do
       allow(@worker).to receive(:run_youtube_dl).and_raise(RuntimeError)
@@ -58,6 +60,8 @@ RSpec.describe DownloadWorker, type: :worker do
     end
     it "download, move, and log data" do
       @worker.download_data(@params)
+      expect(File.exist?("#{video_path}")).to eq true
+      expect(File.exist?("#{audio_path}")).to eq true
       expect(video_status).to eq "downloaded"
     end
   end

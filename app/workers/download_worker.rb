@@ -73,9 +73,7 @@ class DownloadWorker
    data_format = params[:data_format]
    @downloaded_files = Dir[File.join("*.#{data_format}")]
    @downloaded_files.each do |downloaded_filename|
-     dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}")
      uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-     FileUtils.mkdir_p(dirname)
      FileUtils.mkdir_p(uploader_dirname)
      FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
    end if @downloaded_files.any?
