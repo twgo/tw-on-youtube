@@ -20,12 +20,10 @@ class VideosController < ApplicationController
 
   def create
     @video = Video.new(video_params)
-
-    launch_worker
-
     respond_to do |format|
       if @video.save
         Video.last.update(status: 'downloading')
+        launch_worker
         format.html { redirect_to videos_path, notice: 'Video was successfully created.' }
         format.json { render :show, status: :created, location: @video }
       else
