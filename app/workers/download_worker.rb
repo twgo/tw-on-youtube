@@ -7,12 +7,11 @@ class DownloadWorker
 
   def perform(*args)
     url = Video.last.url
-    get_corpus(url)
-  end
-
-  def get_corpus(url)
     params = {data_formats: ['mp4', 'opus'], url: url}
+
     download_data(params)
+
+    'done: get_corpus'
   end
 
   def download_data(params={})
@@ -20,25 +19,44 @@ class DownloadWorker
     data_formats = params[:data_formats]
 
     data_formats.each do |data_format|
-      options = case data_format
-      when 'opus'
-        {
-        'extract-audio': true,
-        'audio-format': data_format,
-        'audio-quality': 0,
-        }
-      when 'mp4'
-        {
-          'write-sub': true,
-          'format': data_format,
-          'sub-lang': 'zh-TW'
-        }
-      end
-      data = YoutubeDL.download url, options
+      options = youtube_dl_options(data_format)
+
+      data = youtube_dl(url, options)
+
       params = params.merge(data: data, data_format: data_format)
       move_files(params)
       log_data(data)
+      update_status_downloaded(url)
     end
+    'done: download_data'
+  end
+
+  def youtube_dl_options(data_format)
+    if data_format == 'opus'
+      {
+      'extract-audio': true,
+      'audio-format': 'opus',
+      'audio-quality': 0
+      }
+    elsif data_format == 'mp4'
+      {
+        'write-sub': true,
+        'format': 'mp4',
+        'sub-lang': 'zh-TW'
+      }
+    else
+      'opus or mp4 format only'
+    end
+  end
+
+  def youtube_dl(url, options)
+    run_youtube_dl(url, options)
+  rescue => e
+    Video.find_by(url: url).update(status: "Download Fail, YoutubeDL error: #{e}")
+  end
+
+  def run_youtube_dl(url, options)
+    YoutubeDL.download url, options
   end
 
   def move_files(params={})
@@ -47,26 +65,20 @@ class DownloadWorker
     move_file(params)
     move_file({data: data, data_format: 'vtt'}) if data_format == 'mp4'
 
-    Video.last.update(status: 'downloaded')
+    'done: move_files'
   end
 
- def	move_file(params={})
+  def	move_file(params={})
    data = params[:data]
    data_format = params[:data_format]
-   downloaded_files = Dir[File.join("*.#{data_format}")]
-
-   downloaded_files.each do |downloaded_filename|
-     dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}")
-     unless File.directory?(dirname)
-       FileUtils.mkdir_p(dirname)
-     end
+   @downloaded_files = Dir[File.join("*.#{data_format}")]
+   @downloaded_files.each do |downloaded_filename|
      uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-     unless File.directory?(uploader_dirname)
-       FileUtils.mkdir_p(uploader_dirname)
-     end
+     FileUtils.mkdir_p(uploader_dirname)
      FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-   end if downloaded_files.any?
- end
+   end if @downloaded_files.any?
+   'done: move_file'
+  end
 
   def log_data(data)
     Video.last.update(
@@ -97,5 +109,10 @@ class DownloadWorker
     # playlist_title: data.playlist_title,
     # playlist_uploader: data.playlist_uploader,
     # playlist_uploader_id:	data.playlist_uploader_id,
+    'done: log_data'
+  end
+
+  def update_status_downloaded(url)
+    Video.find_by(url: url).update(status: 'downloaded')
   end
 end

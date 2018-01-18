@@ -9,9 +9,9 @@ class VideosController < ApplicationController
 
   # GET /videos/1
   # GET /videos/1.json
-  def show
-    @video = Video.find(params[:id])
-  end
+  # def show
+  #   @video = Video.find(params[:id])
+  # end
 
   # GET /videos/new
   def new
@@ -20,11 +20,10 @@ class VideosController < ApplicationController
 
   def create
     @video = Video.new(video_params)
-
     respond_to do |format|
       if @video.save
-        DownloadWorker.perform_async
         Video.last.update(status: 'downloading')
+        DownloadWorker.perform_async
         format.html { redirect_to videos_path, notice: 'Video was successfully created.' }
         format.json { render :show, status: :created, location: @video }
       else

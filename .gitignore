@@ -1,3 +1,7 @@
+*.mp4
+*.opus
+*.vtt
+*.mkv
 *.rbc
 capybara-*.html
 .rspec
