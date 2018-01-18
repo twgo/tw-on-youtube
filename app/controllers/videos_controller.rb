@@ -21,9 +21,10 @@ class VideosController < ApplicationController
   def create
     @video = Video.new(video_params)
 
+    launch_worker
+
     respond_to do |format|
       if @video.save
-        DownloadWorker.perform_async
         Video.last.update(status: 'downloading')
         format.html { redirect_to videos_path, notice: 'Video was successfully created.' }
         format.json { render :show, status: :created, location: @video }
@@ -32,6 +33,10 @@ class VideosController < ApplicationController
         format.json { render json: @video.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def launch_worker
+    DownloadWorker.perform_async
   end
 
   private

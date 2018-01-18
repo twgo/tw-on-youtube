@@ -19,6 +19,7 @@ RSpec.describe VideosController, type: :controller do
       expect{ post(:create, {}) }.to raise_error ActionController::ParameterMissing
     end
     it "create video" do
+      allow(subject).to receive(:launch_worker)
       params = attributes_for(:video)
       expect{post :create, params: {video: params}}.to change{Video.count}.by 1
     end
