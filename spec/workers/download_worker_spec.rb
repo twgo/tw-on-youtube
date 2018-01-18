@@ -49,7 +49,7 @@ RSpec.describe DownloadWorker, type: :worker do
   end
 
   context "when download_data with youtube-dl" do
-    let(:video_status) {Video.order("updated_at DESC").find_by(url: @url).status}
+    let(:video_status) {Video.find_by(url: @url).status}
     let(:video_path){'./public/download/mp4/KawinSr/10 Sec countdown Male voice-w5C7S0FlSyM.mp4'}
     let(:audio_path){'./public/download/opus/KawinSr/10 Sec countdown Male voice-w5C7S0FlSyM.opus'}
 
