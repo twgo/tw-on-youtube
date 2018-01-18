@@ -3,8 +3,8 @@ require 'rails_helper'
 RSpec.describe "videos/index", type: :view do
   before(:each) do
     assign(:videos, [
-      Video.create!(url: 'test'),
-      Video.create!(url: 'test1')
+      Video.create!(url: 'https://www.youtube.com/watch?v=fhnlIBmVk6I'),
+      Video.create!(url: 'https://www.youtube.com/watch?v=T5L-pt9EnII')
     ])
   end
 
