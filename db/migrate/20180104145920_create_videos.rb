@@ -3,6 +3,8 @@ class CreateVideos < ActiveRecord::Migration[5.1]
   def change
     create_table :videos do |t|
       t.string :url
+      t.string :status
+      t.string :format_downloaded
       t.string :yid
       t.string :title
       t.string :thumbnail
@@ -14,7 +16,6 @@ class CreateVideos < ActiveRecord::Migration[5.1]
       t.string :upload_date
       t.string :abr
       t.string :acodec
-      t.string :status
       t.string :tags
       t.string :location
       t.string :view_count
@@ -35,6 +36,6 @@ class CreateVideos < ActiveRecord::Migration[5.1]
       t.timestamps
     end
 
-    add_index :videos, :url
+    add_index :videos, :yid
   end
 end
