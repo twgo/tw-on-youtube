@@ -37,5 +37,6 @@ class CreateVideos < ActiveRecord::Migration[5.1]
     end
 
     add_index :videos, :yid
+    add_index :videos, :url
   end
 end

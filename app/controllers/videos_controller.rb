@@ -38,6 +38,8 @@ class VideosController < ApplicationController
     def video_params
       params.require(:video).permit(
         :url,
+        :status,
+        :format_downloaded,
         :yid,
         :title,
         :thumbnail,
@@ -48,7 +50,6 @@ class VideosController < ApplicationController
         :upload_date,
         :abr,
         :acodec,
-        :status,
         :tags,
         :location,
         :view_count,

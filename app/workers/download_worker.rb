@@ -25,7 +25,7 @@ class DownloadWorker
 
       params = params.merge(data: data, data_format: data_format)
       move_files(params)
-      log_data(data)
+      log_data(data, url)
       update_status_downloaded(url)
     end
     'done: download_data'
@@ -80,8 +80,8 @@ class DownloadWorker
    'done: move_file'
   end
 
-  def log_data(data)
-    Video.last.update(
+  def log_data(data, url)
+    Video.find_by(url: url).update(
       yid: data.id,
       title: data.title,
       thumbnail: data.thumbnail,
