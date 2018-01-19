@@ -4,4 +4,3 @@
 log/*
 tmp/*
 public/download
-Gemfile.lock
