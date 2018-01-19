@@ -63,20 +63,23 @@ class DownloadWorker
     data = params[:data]
     data_format = params[:data_format]
     move_file(params)
-    move_file({data: data, data_format: 'vtt'}) if data_format == 'mp4'
+    move_file({url: params[:url], data: data, data_format: 'vtt'}) if data_format == 'mp4'
 
     'done: move_files'
   end
 
   def	move_file(params={})
    data = params[:data]
+	 url = params[:url]
    data_format = params[:data_format]
    @downloaded_files = Dir[File.join("*.#{data_format}")]
    @downloaded_files.each do |downloaded_filename|
      uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
      FileUtils.mkdir_p(uploader_dirname)
      FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-   end if @downloaded_files.any?
+    end if @downloaded_files.any?
+
+    update_format_downloaded(url, data_format)
    'done: move_file'
   end
 
@@ -114,5 +117,11 @@ class DownloadWorker
 
   def update_status_downloaded(url)
     Video.find_by(url: url).update(status: 'downloaded')
+  end
+
+  def update_format_downloaded(url, data_format)
+		video = Video.find_by(url: url)
+		formats = video.format_downloaded || ''
+		video.update(format_downloaded: formats + "#{data_format} ")
   end
 end

@@ -3,29 +3,20 @@ RSpec.describe DownloadWorker, type: :worker do
   before do
     @url = 'https://www.youtube.com/watch?v=w5C7S0FlSyM'
     @url2 = 'https://www.youtube.com/watch?v=IstxG6gapQM'
+    @url3 = 'https://www.youtube.com/watch?v=7Ird1A7q_R8'
 
     @params = {data: 'youtube_dl_data', data_formats: ['mp4', 'opus'], url: @url}
     @worker = DownloadWorker.new
 
     @video1 = Video.create(url: @url, status: 'video 1 downloading')
     @video2 = Video.create(url: @url2, status: 'video 2 downloading')
+    @video3 = Video.create(url: @url3)
   end
 
   it 'run download_data once' do
     allow(@worker).to receive(:download_data)
 
     expect(@worker.perform).to eq "done: get_corpus"
-  end
-
-  context '.move_files' do
-    before do
-      @worker.move_files.instance_variable_set(:@downloaded_files, ['1.mp4', '2.opus', '3.vtt'])
-      @worker.move_files({data_formats: ['mp4', 'opus']})
-    end
-
-    it 'wont leave mp4' do expect(Dir[File.join("*.mp4")]).to eq [] end
-    it 'wont leave opus' do expect(Dir[File.join("*.opus")]).to eq [] end
-    it 'wont leave vtt' do expect(Dir[File.join("*.vtt")]).to eq [] end
   end
 
   context '.youtube_dl_options' do
@@ -60,9 +51,18 @@ RSpec.describe DownloadWorker, type: :worker do
     end
     it "download, move, and log data" do
       @worker.download_data(@params)
+
+      expect(Dir[File.join("*.mp4")]).to eq []
+      expect(Dir[File.join("*.opus")]).to eq []
+      expect(Dir[File.join("*.vtt")]).to eq []
       expect(File.exist?("#{video_path}")).to eq true
       expect(File.exist?("#{audio_path}")).to eq true
+
       expect(video_status).to eq "downloaded"
+    end
+    it ".update_format_downloaded" do
+      @worker.update_format_downloaded(@url3, 'mp4')
+      expect(Video.find_by(url: @url3).format_downloaded).to eq 'mp4 '
     end
   end
 end
