@@ -4,3 +4,15 @@
 log/*
 tmp/*
 public/download
+.gitignore
+coverage
+/tmp
+/log
+Dockerfile
+Dockerfile.prod
+docker-compose.yml
+README.md
+.env
+.envrc
+.byebug_history
+.rake_tasks
