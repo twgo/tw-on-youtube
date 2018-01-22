@@ -42,7 +42,7 @@ class DownloadWorker
       {
         'write-sub': true,
         'format': 'mp4',
-        'sub-lang': 'zh-TW'
+        'sub-lang': 'zh-Hant,zh-Hans,en'
       }
     else
       'opus or mp4 format only'
@@ -70,7 +70,7 @@ class DownloadWorker
 
   def	move_file(params={})
    data = params[:data]
-	 url = params[:url]
+   url = params[:url]
    data_format = params[:data_format]
    @downloaded_files = Dir[File.join("*.#{data_format}")]
    @downloaded_files.each do |downloaded_filename|
@@ -120,8 +120,8 @@ class DownloadWorker
   end
 
   def update_format_downloaded(url, data_format)
-		video = Video.find_by(url: url)
-		formats = video.format_downloaded || ''
-		video.update(format_downloaded: formats + "#{data_format} ")
+    video = Video.find_by(url: url)
+    formats = video.format_downloaded || ''
+    video.update(format_downloaded: formats + "#{data_format} ")
   end
 end

@@ -4,6 +4,7 @@ RSpec.describe DownloadWorker, type: :worker do
     @url = 'https://www.youtube.com/watch?v=w5C7S0FlSyM'
     @url2 = 'https://www.youtube.com/watch?v=IstxG6gapQM'
     @url3 = 'https://www.youtube.com/watch?v=7Ird1A7q_R8'
+    @url4 = 'https://www.youtube.com/watch?v=zdbAL1J0SKM' # 簡繁英字幕
 
     @params = {data: 'youtube_dl_data', data_formats: ['mp4', 'opus'], url: @url}
     @worker = DownloadWorker.new
@@ -11,6 +12,7 @@ RSpec.describe DownloadWorker, type: :worker do
     @video1 = Video.create(url: @url, status: 'video 1 downloading')
     @video2 = Video.create(url: @url2, status: 'video 2 downloading')
     @video3 = Video.create(url: @url3)
+    @video4 = Video.create(url: @url4)
   end
 
   it 'run download_data once' do
@@ -24,7 +26,7 @@ RSpec.describe DownloadWorker, type: :worker do
       expect(@worker.youtube_dl_options('mp4')).to eq({
         'write-sub': true,
         'format': 'mp4',
-        'sub-lang': 'zh-TW'
+        'sub-lang': 'zh-Hant,zh-Hans,en'
          })
     end
     it 'return audio options' do
