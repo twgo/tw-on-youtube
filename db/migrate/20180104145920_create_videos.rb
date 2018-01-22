@@ -5,6 +5,7 @@ class CreateVideos < ActiveRecord::Migration[5.1]
       t.string :url
       t.string :status
       t.string :format_downloaded
+      t.string :subtitle_downloaded
       t.string :yid
       t.string :title
       t.string :thumbnail

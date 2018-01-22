@@ -16,6 +16,7 @@ ActiveRecord::Schema.define(version: 20180104145920) do
     t.string "url"
     t.string "status"
     t.string "format_downloaded"
+    t.string "subtitle_downloaded"
     t.string "yid"
     t.string "title"
     t.string "thumbnail"

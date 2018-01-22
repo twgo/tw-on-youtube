@@ -7,7 +7,7 @@ class DownloadWorker
 
   def perform(*args)
     url = Video.last.url
-    params = {data_formats: ['mp4', 'opus'], url: url}
+    params = {data_formats: ['opus', 'mp4'], url: url}
 
     download_data(params)
 
@@ -77,6 +77,8 @@ class DownloadWorker
      uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
      FileUtils.mkdir_p(uploader_dirname)
      FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
+     lang = downloaded_filename.split('.')[-2]
+     update_subtitle_downloaded(url, lang) if data_format == 'vtt'
     end if @downloaded_files.any?
 
     update_format_downloaded(url, data_format)
@@ -123,5 +125,11 @@ class DownloadWorker
     video = Video.find_by(url: url)
     formats = video.format_downloaded || ''
     video.update(format_downloaded: formats + "#{data_format} ")
+  end
+
+  def update_subtitle_downloaded(url, lang)
+    video = Video.find_by(url: url)
+    vtts = video.subtitle_downloaded || ''
+    video.update(subtitle_downloaded: vtts + "#{lang} ")
   end
 end

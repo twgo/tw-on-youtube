@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/twgo/tw-on-youtube/badge.svg?branch=master)](https://coveralls.io/github/twgo/tw-on-youtube?branch=master)  [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/twgo/Lobby)
 
 # 安裝
-docker-compose up --build (測試中	)
+[一鍵啟動](https://github.com/twgo/tw-on-youtube/wiki/%E5%AE%89%E8%A3%9Ddocker-compose%E4%B8%80%E9%8D%B5%E5%95%9F%E7%94%A8%E6%9C%8D%E5%8B%99)
 
 # 專案目的
 本專案取得影片資源以訓練語音辨識
@@ -37,6 +37,8 @@ docker-compose up --build (測試中	)
 status 下載狀態
 yid youtube影片id
 format_downloaded 已下載之檔案格式
+subtitle_downloaded 已下載之字幕語系
+其它為 youtube-dl 提供之 metadata
 
 # 討論板
 歡迎於 https://gitter.im/twgo/Lobby 留言給我們意見
