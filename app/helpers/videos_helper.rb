@@ -11,7 +11,7 @@ module VideosHelper
           vtt_name = file_name vtt
           show_vtt = vtt_name.split('.')[-1]
           link_to(show_vtt, "#{folder}/#{vtt_name}.vtt", target: '_blank')
-        end
+        end if vtts.any?
       else
         uploader_dirname = File.file?("#{path}/#{data_name}.#{data_format}")
         link_to(data_format, "#{folder}/#{data_name}.#{data_format}", target: '_blank') if uploader_dirname.present?
