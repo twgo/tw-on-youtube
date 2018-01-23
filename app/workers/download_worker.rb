@@ -97,6 +97,7 @@ class DownloadWorker
         FileUtils.mkdir_p(uploader_dirname)
         FileUtils.mv("#{vtt}", "#{DOCS_PATH}/vtt/#{data.uploader_id}/#{vtt}")
       end
+      update_format_downloaded(url, 'vtt')
     else
       uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{@downloaded_files}")
       FileUtils.mkdir_p(uploader_dirname)
