@@ -9,8 +9,16 @@ class DownloadWorker
     url = Video.last.url
     params = {data_formats: ['opus', 'mp4'], url: url}
 
-    download_data(params)
-
+    if url.include? 'list='
+      begin
+        YoutubeDL.download url, {'format': 'mp4'}
+      rescue
+        yids = Dir[File.join("*.mp4")].map { |name| name.split('-')[-1].split('.')[0] }
+        p yids
+      end
+    else
+      download_data(params)
+    end
     'done: get_corpus'
   end
 
@@ -24,6 +32,7 @@ class DownloadWorker
       data = youtube_dl(url, options)
 
       params = params.merge(data: data, data_format: data_format)
+
       move_files(params)
       log_data(data, url)
       update_status_downloaded(url)
