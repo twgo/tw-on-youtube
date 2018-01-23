@@ -18,7 +18,7 @@ RSpec.describe DownloadWorker, type: :worker do
   it 'run download_data once' do
     allow(@worker).to receive(:download_data)
 
-    expect(@worker.perform).to eq "done: get_corpus"
+    expect(@worker.perform(@url)).to eq "done: get_corpus"
   end
 
   context '.youtube_dl_options' do

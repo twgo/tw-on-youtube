@@ -23,7 +23,7 @@ class VideosController < ApplicationController
     respond_to do |format|
       if @video.save
         Video.last.update(status: 'downloading')
-        DownloadWorker.perform_async
+        DownloadWorker.perform_async([@video.url])
         format.html { redirect_to videos_path, notice: 'Video was successfully created.' }
         format.json { render :show, status: :created, location: @video }
       else

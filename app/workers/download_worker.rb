@@ -6,16 +6,22 @@ class DownloadWorker
   DOCS_PATH = File.join(Rails.root, 'public', 'download')
 
   def perform(*args)
-    url = Video.last.url
+    url = args[0][0]
     params = {data_formats: ['opus', 'mp4'], url: url}
-
     if url.include? 'list='
+      list_url = url
       begin
-        YoutubeDL.download url, {'format': 'mp4'}
+        YoutubeDL.download list_url, {'format': 'mp4'}
       rescue
-        yids = Dir[File.join("*.mp4")].map { |name| name.split('-')[-1].split('.')[0] }
-        p yids
+        'ignore gem yotube-dl.rb bug'
       end
+      yids = Dir[File.join("*.mp4")].map { |name| name.split('-')[-1].split('.')[0] }
+      yids.each do |yid|
+        video_url="https://www.youtube.com/watch?v=#{yid}"
+        Video.create(url: video_url)
+        DownloadWorker.perform_async([video_url])
+      end
+      update_status_downloaded(list_url)
     else
       download_data(params)
     end
@@ -78,20 +84,27 @@ class DownloadWorker
   end
 
   def	move_file(params={})
-   data = params[:data]
-   url = params[:url]
-   data_format = params[:data_format]
-   @downloaded_files = Dir[File.join("*.#{data_format}")]
-   @downloaded_files.each do |downloaded_filename|
-     uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-     FileUtils.mkdir_p(uploader_dirname)
-     FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-     lang = downloaded_filename.split('.')[-2]
-     update_subtitle_downloaded(url, lang) if data_format == 'vtt'
-    end if @downloaded_files.any?
+    data = params[:data]
+    url = params[:url]
+    data_format = params[:data_format]
+    @downloaded_files = data.filename.split('.')[-2]
+    if data_format == 'vtt'
+      vtts = Dir[File.join("*.vtt")]
+      vtts.each do |vtt|
+        lang = vtt.split('.')[-2]
+        update_subtitle_downloaded(url, lang)
+        uploader_dirname = File.dirname("#{DOCS_PATH}/vtt/#{data.uploader_id}/#{vtt}")
+        FileUtils.mkdir_p(uploader_dirname)
+        FileUtils.mv("#{vtt}", "#{DOCS_PATH}/vtt/#{data.uploader_id}/#{vtt}")
+      end
+    else
+      uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{@downloaded_files}")
+      FileUtils.mkdir_p(uploader_dirname)
+      FileUtils.mv("#{@downloaded_files}.#{data_format}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{@downloaded_files}.#{data_format}")
 
-    update_format_downloaded(url, data_format)
-   'done: move_file'
+      update_format_downloaded(url, data_format)
+      'done: move_file'
+    end
   end
 
   def log_data(data, url)
