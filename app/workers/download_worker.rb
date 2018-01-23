@@ -18,7 +18,7 @@ class DownloadWorker
       yids = Dir[File.join("*.mp4")].map { |name| name.split('-')[-1].split('.')[0] }
       yids.each do |yid|
         video_url="https://www.youtube.com/watch?v=#{yid}"
-        Video.create(url: video_url)
+        Video.create(url: video_url, playlist: list_url)
         DownloadWorker.perform_async([video_url])
       end
       update_status_downloaded(list_url)
