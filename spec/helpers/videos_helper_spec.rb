@@ -7,4 +7,9 @@ RSpec.describe VideosHelper, type: :helper do
     Video.create(url: url, status: 'downloading', filename: 'filename', format_downloaded: 'mp4')
     expect(file_link(Video.find_by(url: url))).to eq ''
   end
+  it 'return vtt' do
+    url = 'https://www.youtube.com/watch?v=fhnlIBmVk6I'
+    Video.create(url: url, status: 'downloading', filename: 'filename', format_downloaded: 'vtt')
+    expect(file_link(Video.find_by(url: url))).to eq ''
+  end
 end
