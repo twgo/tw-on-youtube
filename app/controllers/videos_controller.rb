@@ -1,6 +1,11 @@
 class VideosController < ApplicationController
   before_action :set_video, only: [:show]
 
+  def get_vtt
+    # path 為錯誤示範，請過濾到不能過濾才行，否則一定會被攻擊 ... 這邊單純的用 .to_i 來強制數字過濾
+    send_file "#{Rails.root}/public/download/vtt/#{params[:u]}/#{params[:p]}.vtt" , type: 'text/plain; charset=utf-8'
+  end
+
   # GET /videos
   # GET /videos.json
   def index
