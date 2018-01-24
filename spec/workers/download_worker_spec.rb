@@ -1,10 +1,11 @@
 require 'rails_helper'
 RSpec.describe DownloadWorker, type: :worker do
   before do
-    @url = 'https://www.youtube.com/watch?v=w5C7S0FlSyM'
+    @url = 'https://www.youtube.com/watch?v=W0jcK0CRKTY'
     @url2 = 'https://www.youtube.com/watch?v=IstxG6gapQM'
     @url3 = 'https://www.youtube.com/watch?v=7Ird1A7q_R8'
     @url4 = 'https://www.youtube.com/watch?v=zdbAL1J0SKM' # 簡繁英字幕
+    @list_url = 'https://www.youtube.com/playlist?list=PLZiftgt33q3Oea2oVAErUDdtZy1gXO6Zi'
 
     @params = {data: 'youtube_dl_data', data_formats: ['mp4', 'opus'], url: @url}
     @worker = DownloadWorker.new
@@ -13,12 +14,20 @@ RSpec.describe DownloadWorker, type: :worker do
     @video2 = Video.create(url: @url2, status: 'video 2 downloading')
     @video3 = Video.create(url: @url3)
     @video4 = Video.create(url: @url4)
+    @list = Video.create(url: @list_url)
   end
 
-  it 'run download_data once' do
+  it 'download a video' do
     allow(@worker).to receive(:download_data)
 
-    expect(@worker.perform(@url)).to eq "done: get_corpus"
+    expect(@worker.perform(@url)).to eq "done: download video"
+  end
+
+  it 'download videos' do
+    allow(@worker).to receive(:download_data)
+    allow(@worker).to receive(:update_status_downloaded)
+
+    expect(@worker.perform(@list_url)).to eq "done: download video"
   end
 
   context '.youtube_dl_options' do
@@ -51,7 +60,7 @@ RSpec.describe DownloadWorker, type: :worker do
       @worker.youtube_dl(@url, {})
       expect(video_status).to eq "Download Fail, YoutubeDL error: RuntimeError"
     end
-    it "download, move, and log data" do
+    it "download a video: save, move, and log data" do
       @worker.download_data(@params)
 
       expect(Dir[File.join("*.mp4")]).to eq []

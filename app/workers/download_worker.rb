@@ -22,10 +22,11 @@ class DownloadWorker
         DownloadWorker.perform_async([video_url])
       end
       update_status_downloaded(list_url)
+      'done: create video_list worker'
     else
       download_data(params)
+      'done: download video'
     end
-    'done: get_corpus'
   end
 
   def download_data(params={})
@@ -122,14 +123,14 @@ class DownloadWorker
       abr: data.abr,
       acodec: data.acodec,
       view_count: data.view_count,
-      like_count: data.like_count,
-      dislike_count: data.dislike_count,
-      average_rating: data.average_rating,
       age_limit: data.age_limit,
     )
     # Not all video has..
+    # like_count: data.like_count,
+    # dislike_count: data.dislike_count,
     # repost_count: data.repost_count,
     # comment_count: data.comment_count,
+    # average_rating: data.average_rating,
     # location: data.location,
     # autonumber: data.autonumber,
     # playlist: data.playlist,
