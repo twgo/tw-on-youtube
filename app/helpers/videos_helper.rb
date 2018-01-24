@@ -10,6 +10,7 @@ module VideosHelper
         vtts.map do |vtt|
           vtt_name = file_name vtt
           show_vtt = vtt_name.split('.')[-1]
+          # link_to(show_vtt, "#{folder}/#{vtt_name}.vtt", target: '_blank')
           link_to(show_vtt, get_vtt_videos_path(p: vtt_name, u: video.uploader_id), target: '_blank')
         end if vtts.any?
       else
