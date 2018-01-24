@@ -14,7 +14,6 @@ RSpec.describe DownloadWorker, type: :worker do
     @video2 = Video.create(url: @url2, status: 'video 2 downloading')
     @video3 = Video.create(url: @url3)
     @video4 = Video.create(url: @url4)
-    @list = Video.create(url: @list_url)
   end
 
   it 'download a video' do
@@ -24,10 +23,10 @@ RSpec.describe DownloadWorker, type: :worker do
   end
 
   it 'download videos' do
-    allow(@worker).to receive(:download_data)
+    allow(@worker).to receive(:create_woker)
     allow(@worker).to receive(:update_status_downloaded)
 
-    expect(@worker.perform(@list_url)).to eq "done: download video"
+    expect(@worker.perform([@list_url])).to eq "done: create video_list worker"
   end
 
   context '.youtube_dl_options' do
@@ -80,6 +79,10 @@ RSpec.describe DownloadWorker, type: :worker do
     it ".update_subtitle_downloaded" do
       @worker.update_subtitle_downloaded(@url4, 'en')
       expect(Video.find_by(url: @url4).subtitle_downloaded).to eq 'en '
+    end
+    it ".create_worker" do
+      allow(DownloadWorker).to receive(:perform_async).and_return('worker created')
+      expect(@worker.create_woker(@url)).to eq 'worker created'
     end
   end
 end

@@ -19,7 +19,7 @@ class DownloadWorker
       yids.each do |yid|
         video_url="https://www.youtube.com/watch?v=#{yid}"
         Video.create(url: video_url, playlist: list_url)
-        DownloadWorker.perform_async([video_url])
+        create_woker(video_url)
       end
       update_status_downloaded(list_url)
       'done: create video_list worker'
@@ -27,6 +27,10 @@ class DownloadWorker
       download_data(params)
       'done: download video'
     end
+  end
+
+  def create_woker(video_url)
+    DownloadWorker.perform_async([video_url])
   end
 
   def download_data(params={})
