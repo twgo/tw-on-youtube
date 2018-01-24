@@ -10,11 +10,9 @@ class DownloadWorker
     params = {data_formats: ['opus', 'mp4'], url: url}
     if url.include? 'list='
       list_url = url
-      begin
-        YoutubeDL.download list_url, {'format': 'mp4'}
-      rescue
-        'ignore gem yotube-dl.rb bug'
-      end
+
+      YoutubeDL.download list_url, {'format': 'mp4'}
+
       yids = Dir[File.join("*.mp4")].map { |name| name.split('-')[-1].split('.')[0] }
       yids.each do |yid|
         video_url="https://www.youtube.com/watch?v=#{yid}"
