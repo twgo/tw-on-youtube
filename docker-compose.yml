@@ -27,5 +27,3 @@ services:
     command: redis-server --appendonly yes
 volumes:
   redis-data:
-  bundle:
-    driver: local
