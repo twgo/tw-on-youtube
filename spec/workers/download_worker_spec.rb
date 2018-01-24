@@ -52,8 +52,9 @@ RSpec.describe DownloadWorker, type: :worker do
 
   context "when download_data with youtube-dl" do
     let(:video_status) {Video.find_by(url: @url).status}
-    let(:video_path){'./public/download/mp4/KawinSr/10 Sec countdown Male voice-w5C7S0FlSyM.mp4'}
-    let(:audio_path){'./public/download/opus/KawinSr/10 Sec countdown Male voice-w5C7S0FlSyM.opus'}
+    let(:video_path){'./public/download/mp4/BingAds/Bing Ads AAS 10 sec 01 052716-W0jcK0CRKTY.mp4'}
+    let(:audio_path){'./public/download/opus/BingAds/Bing Ads AAS 10 sec 01 052716-W0jcK0CRKTY.opus'}
+    let(:subtitle_path){'./public/download/vtt/BingAds/Bing Ads AAS 10 sec 01 052716-W0jcK0CRKTY.en.vtt'}
 
     it "raise error if youtube-dl not work" do
       allow(@worker).to receive(:run_youtube_dl).and_raise(RuntimeError)
@@ -68,6 +69,7 @@ RSpec.describe DownloadWorker, type: :worker do
       expect(Dir[File.join("*.vtt")]).to eq []
       expect(File.exist?("#{video_path}")).to eq true
       expect(File.exist?("#{audio_path}")).to eq true
+      expect(File.exist?("#{subtitle_path}")).to eq true
 
       expect(video_status).to eq "downloaded"
     end
