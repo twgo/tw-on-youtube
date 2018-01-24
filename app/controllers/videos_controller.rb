@@ -8,9 +8,6 @@ class VideosController < ApplicationController
   # GET /videos
   # GET /videos.json
   def index
-    response.charset = "utf-8"
-    headers["Content-Type"] = 'text/html; charset=utf-8'
-
     @videos = Video.order(updated_at: :desc)
   end
 
