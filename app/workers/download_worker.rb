@@ -10,10 +10,12 @@ class DownloadWorker
     params = {data_formats: ['opus', 'mp4'], url: url}
     if url.include? 'list='
       list_url = url
-
-      YoutubeDL.download list_url, {'format': 'mp4'}
-
-      yids = Dir[File.join("*.mp4")].map { |name| name.split('-')[-1].split('.')[0] }
+      begin
+        YoutubeDL.download list_url, {'format': 'mp4'}
+      rescue
+        'ignore youtube-dl.rb bug'
+      end
+      yids = Dir[File.join("*.mp4")].map { |name| name.split('.')[-2][-11..-1]}
       yids.each do |yid|
         video_url="https://www.youtube.com/watch?v=#{yid}"
         Video.create(url: video_url, playlist: list_url)
