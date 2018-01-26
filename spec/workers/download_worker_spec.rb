@@ -22,11 +22,17 @@ RSpec.describe DownloadWorker, type: :worker do
     expect(@worker.perform(@url)).to eq "done: download video"
   end
 
-  it 'download videos' do
+  it 'download videos by list' do
     allow(@worker).to receive(:create_woker)
     allow(@worker).to receive(:update_status_downloaded)
 
     expect(@worker.perform([@list_url])).to eq "done: create video_list worker"
+  end
+
+  it 'ignore error while download list' do
+    allow(@worker).to receive(:run_youtube_dl).and_raise(RuntimeError)
+
+    expect(@worker.youtube_dl_list([@list_url])).to eq "ignore youtube-dl.rb bug"
   end
 
   context '.youtube_dl_options' do

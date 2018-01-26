@@ -10,11 +10,9 @@ class DownloadWorker
     params = {data_formats: ['opus', 'mp4'], url: url}
     if url.include? 'list='
       list_url = url
-      begin
-        YoutubeDL.download list_url, {'format': 'mp4'}
-      rescue
-        'ignore youtube-dl.rb bug'
-      end
+
+      youtube_dl_list(list_url)
+
       yids = Dir[File.join("*.mp4")].map { |name| name.split('.')[-2][-11..-1]}
       yids.each do |yid|
         video_url="https://www.youtube.com/watch?v=#{yid}"
@@ -67,6 +65,12 @@ class DownloadWorker
     else
       'opus or mp4 format only'
     end
+  end
+
+  def youtube_dl_list(list_url)
+    run_youtube_dl(url, 'mp4')
+  rescue
+    "ignore youtube-dl.rb bug"
   end
 
   def youtube_dl(url, options)
