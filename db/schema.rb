@@ -14,6 +14,9 @@ ActiveRecord::Schema.define(version: 20180104145920) do
 
   create_table "videos", force: :cascade do |t|
     t.string "url"
+    t.string "status"
+    t.string "format_downloaded"
+    t.string "subtitle_downloaded"
     t.string "yid"
     t.string "title"
     t.string "thumbnail"
@@ -25,7 +28,6 @@ ActiveRecord::Schema.define(version: 20180104145920) do
     t.string "upload_date"
     t.string "abr"
     t.string "acodec"
-    t.string "status"
     t.string "tags"
     t.string "location"
     t.string "view_count"
@@ -44,6 +46,7 @@ ActiveRecord::Schema.define(version: 20180104145920) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["url"], name: "index_videos_on_url"
+    t.index ["yid"], name: "index_videos_on_yid"
   end
 
 end

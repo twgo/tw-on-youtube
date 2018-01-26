@@ -1,6 +1,10 @@
 class VideosController < ApplicationController
   before_action :set_video, only: [:show]
 
+  def get_vtt
+    send_file "#{Rails.root}/public/download/vtt/#{params[:u]}/#{params[:p]}.vtt" , type: 'text/plain; charset=utf-8'
+  end
+
   # GET /videos
   # GET /videos.json
   def index
@@ -23,7 +27,7 @@ class VideosController < ApplicationController
     respond_to do |format|
       if @video.save
         Video.last.update(status: 'downloading')
-        DownloadWorker.perform_async
+        DownloadWorker.perform_async([@video.url])
         format.html { redirect_to videos_path, notice: 'Video was successfully created.' }
         format.json { render :show, status: :created, location: @video }
       else
@@ -38,32 +42,34 @@ class VideosController < ApplicationController
     def video_params
       params.require(:video).permit(
         :url,
-        :yid,
-        :title,
-        :thumbnail,
-        :description,
-        :duration,
-        :filename,
-        :uploader,
-        :upload_date,
-        :abr,
-        :acodec,
-        :status,
-        :tags,
-        :location,
-        :view_count,
-        :like_count,
-        :dislike_count,
-        :repost_count,
-        :average_rating,
-        :comment_count,
-        :age_limit,
-        :autonumber,
-        :playlist,
-        :playlist_id,
-        :playlist_title,
-        :playlist_uploader,
-        :playlist_uploader_id,
       )
     end
 end
+
+# :status,
+# :format_downloaded,
+# :yid,
+# :title,
+# :thumbnail,
+# :description,
+# :duration,
+# :filename,
+# :uploader,
+# :upload_date,
+# :abr,
+# :acodec,
+# :tags,
+# :location,
+# :view_count,
+# :like_count,
+# :dislike_count,
+# :repost_count,
+# :average_rating,
+# :comment_count,
+# :age_limit,
+# :autonumber,
+# :playlist,
+# :playlist_id,
+# :playlist_title,
+# :playlist_uploader,
+# # :playlist_uploader_id,

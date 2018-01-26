@@ -27,5 +27,6 @@ module Twgo0104
 
     # Don't generate system test files.
     config.generators.system_tests = nil
+    config.encoding = "utf-8"
   end
 end

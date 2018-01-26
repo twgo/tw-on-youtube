@@ -6,12 +6,29 @@ class DownloadWorker
   DOCS_PATH = File.join(Rails.root, 'public', 'download')
 
   def perform(*args)
-    url = Video.last.url
-    params = {data_formats: ['mp4', 'opus'], url: url}
+    url = args[0][0]
+    params = {data_formats: ['opus', 'mp4'], url: url}
+    if url.include? 'list='
+      list_url = url
 
-    download_data(params)
+      youtube_dl_list(list_url)
 
-    'done: get_corpus'
+      yids = Dir[File.join("*.mp4")].map { |name| name.split('.')[-2][-11..-1]}
+      yids.each do |yid|
+        video_url="https://www.youtube.com/watch?v=#{yid}"
+        Video.create(url: video_url, playlist: list_url)
+        create_woker(video_url)
+      end
+      update_status_downloaded(list_url)
+      'done: create video_list worker'
+    else
+      download_data(params)
+      'done: download video'
+    end
+  end
+
+  def create_woker(video_url)
+    DownloadWorker.perform_async([video_url])
   end
 
   def download_data(params={})
@@ -24,8 +41,9 @@ class DownloadWorker
       data = youtube_dl(url, options)
 
       params = params.merge(data: data, data_format: data_format)
+
       move_files(params)
-      log_data(data)
+      log_data(data, url)
       update_status_downloaded(url)
     end
     'done: download_data'
@@ -42,11 +60,17 @@ class DownloadWorker
       {
         'write-sub': true,
         'format': 'mp4',
-        'sub-lang': 'zh-TW'
+        'sub-lang': 'zh-Hant,zh-Hans,en'
       }
     else
       'opus or mp4 format only'
     end
+  end
+
+  def youtube_dl_list(list_url)
+    run_youtube_dl(list_url, {'format': 'mp4'})
+  rescue
+    "ignore youtube-dl.rb bug"
   end
 
   def youtube_dl(url, options)
@@ -63,25 +87,38 @@ class DownloadWorker
     data = params[:data]
     data_format = params[:data_format]
     move_file(params)
-    move_file({data: data, data_format: 'vtt'}) if data_format == 'mp4'
+    move_file({url: params[:url], data: data, data_format: 'vtt'}) if data_format == 'mp4'
 
     'done: move_files'
   end
 
   def	move_file(params={})
-   data = params[:data]
-   data_format = params[:data_format]
-   @downloaded_files = Dir[File.join("*.#{data_format}")]
-   @downloaded_files.each do |downloaded_filename|
-     uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-     FileUtils.mkdir_p(uploader_dirname)
-     FileUtils.mv("#{downloaded_filename}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{downloaded_filename}")
-   end if @downloaded_files.any?
-   'done: move_file'
+    data = params[:data]
+    url = params[:url]
+    data_format = params[:data_format]
+    @downloaded_files = data.filename.split('.')[-2]
+    if data_format == 'vtt'
+      vtts = Dir[File.join("*.vtt")]
+      vtts.each do |vtt|
+        lang = vtt.split('.')[-2]
+        update_subtitle_downloaded(url, lang)
+        uploader_dirname = File.dirname("#{DOCS_PATH}/vtt/#{data.uploader_id}/#{vtt}")
+        FileUtils.mkdir_p(uploader_dirname)
+        FileUtils.mv("#{vtt}", "#{DOCS_PATH}/vtt/#{data.uploader_id}/#{vtt}")
+      end
+      update_format_downloaded(url, 'vtt')
+    else
+      uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{@downloaded_files}")
+      FileUtils.mkdir_p(uploader_dirname)
+      FileUtils.mv("#{@downloaded_files}.#{data_format}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{@downloaded_files}.#{data_format}")
+
+      update_format_downloaded(url, data_format)
+      'done: move_file'
+    end
   end
 
-  def log_data(data)
-    Video.last.update(
+  def log_data(data, url)
+    Video.find_by(url: url).update(
       yid: data.id,
       title: data.title,
       thumbnail: data.thumbnail,
@@ -94,14 +131,14 @@ class DownloadWorker
       abr: data.abr,
       acodec: data.acodec,
       view_count: data.view_count,
-      like_count: data.like_count,
-      dislike_count: data.dislike_count,
-      average_rating: data.average_rating,
       age_limit: data.age_limit,
     )
     # Not all video has..
+    # like_count: data.like_count,
+    # dislike_count: data.dislike_count,
     # repost_count: data.repost_count,
     # comment_count: data.comment_count,
+    # average_rating: data.average_rating,
     # location: data.location,
     # autonumber: data.autonumber,
     # playlist: data.playlist,
@@ -114,5 +151,17 @@ class DownloadWorker
 
   def update_status_downloaded(url)
     Video.find_by(url: url).update(status: 'downloaded')
+  end
+
+  def update_format_downloaded(url, data_format)
+    video = Video.find_by(url: url)
+    formats = video.format_downloaded || ''
+    video.update(format_downloaded: formats + "#{data_format} ")
+  end
+
+  def update_subtitle_downloaded(url, lang)
+    video = Video.find_by(url: url)
+    vtts = video.subtitle_downloaded || ''
+    video.update(subtitle_downloaded: vtts + "#{lang} ")
   end
 end
