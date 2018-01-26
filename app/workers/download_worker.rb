@@ -68,7 +68,7 @@ class DownloadWorker
   end
 
   def youtube_dl_list(list_url)
-    run_youtube_dl(url, 'mp4')
+    run_youtube_dl(list_url, 'mp4')
   rescue
     "ignore youtube-dl.rb bug"
   end
