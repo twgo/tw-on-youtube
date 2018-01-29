@@ -6,6 +6,7 @@ RSpec.describe DownloadWorker, type: :worker do
     @url3 = 'https://www.youtube.com/watch?v=7Ird1A7q_R8'
     @url4 = 'https://www.youtube.com/watch?v=zdbAL1J0SKM' # 簡繁英字幕
     @list_url = 'https://www.youtube.com/playlist?list=PLZiftgt33q3Oea2oVAErUDdtZy1gXO6Zi'
+    @channel_url = 'https://www.youtube.com/channel/UC4nqlRQN1XT_sExhXihxcQA'
 
     @params = {data: 'youtube_dl_data', data_formats: ['mp4', 'opus'], url: @url}
     @worker = DownloadWorker.new
@@ -22,11 +23,20 @@ RSpec.describe DownloadWorker, type: :worker do
     expect(@worker.perform(@url)).to eq "done: download video"
   end
 
-  it 'download videos by list' do
+  it 'download videos from list' do
+    allow(@worker).to receive(:youtube_dl_list)
     allow(@worker).to receive(:create_woker)
     allow(@worker).to receive(:update_status_downloaded)
 
-    expect(@worker.perform([@list_url])).to eq "done: create video_list worker"
+    expect(@worker.perform([@list_url])).to eq 'done: created, video download workers'
+  end
+
+  it 'download videos from channel' do
+    allow(@worker).to receive(:youtube_dl_list)
+    allow(@worker).to receive(:create_woker)
+    allow(@worker).to receive(:update_status_downloaded)
+
+    expect(@worker.perform([@channel_url])).to eq 'done: created, video download workers'
   end
 
   it 'ignore error while download list' do
@@ -77,6 +87,10 @@ RSpec.describe DownloadWorker, type: :worker do
       expect(File.exist?("#{subtitle_path}")).to eq true
 
       expect(video_status).to eq "downloaded"
+    end
+    it ".update_status_downloaded" do
+      @worker.update_status_downloaded(@url3)
+      expect(Video.find_by(url: @url3).status).to eq 'downloaded'
     end
     it ".update_format_downloaded" do
       @worker.update_format_downloaded(@url3, 'mp4')

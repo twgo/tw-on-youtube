@@ -8,7 +8,7 @@ class DownloadWorker
   def perform(*args)
     url = args[0][0]
     params = {data_formats: ['opus', 'mp4'], url: url}
-    if url.include? 'list='
+    if (url.include?('list=') || url.include?('/channel/'))
       list_url = url
 
       youtube_dl_list(list_url)
@@ -20,7 +20,7 @@ class DownloadWorker
         create_woker(video_url)
       end
       update_status_downloaded(list_url)
-      'done: create video_list worker'
+      'done: created, video download workers'
     else
       download_data(params)
       'done: download video'
@@ -156,12 +156,12 @@ class DownloadWorker
   def update_format_downloaded(url, data_format)
     video = Video.find_by(url: url)
     formats = video.format_downloaded || ''
-    video.update(format_downloaded: formats + "#{data_format} ")
+    video.update_attributes(format_downloaded: formats + "#{data_format} ")
   end
 
   def update_subtitle_downloaded(url, lang)
     video = Video.find_by(url: url)
     vtts = video.subtitle_downloaded || ''
-    video.update(subtitle_downloaded: vtts + "#{lang} ")
+    video.update_attributes(subtitle_downloaded: vtts + "#{lang} ")
   end
 end
