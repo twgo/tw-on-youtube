@@ -5,8 +5,6 @@ RSpec.describe DownloadWorker, type: :worker do
     @url2 = 'https://www.youtube.com/watch?v=IstxG6gapQM'
     @url3 = 'https://www.youtube.com/watch?v=7Ird1A7q_R8'
     @url4 = 'https://www.youtube.com/watch?v=zdbAL1J0SKM' # 簡繁英字幕
-    @list_url = 'https://www.youtube.com/playlist?list=PLZiftgt33q3Oea2oVAErUDdtZy1gXO6Zi'
-    @channel_url = 'https://www.youtube.com/channel/UC4nqlRQN1XT_sExhXihxcQA'
 
     @params = {data: 'youtube_dl_data', data_formats: ['mp4', 'opus'], url: @url}
     @worker = DownloadWorker.new
@@ -21,27 +19,6 @@ RSpec.describe DownloadWorker, type: :worker do
     allow(@worker).to receive(:download_data)
 
     expect(@worker.perform(@url)).to eq "done: download video"
-  end
-
-  it 'download videos from list' do
-    allow(@worker).to receive(:create_woker)
-    allow(@worker).to receive(:update_status_downloaded)
-
-    expect(@worker.perform([@list_url])).to eq 'done: created, video download workers'
-  end
-
-  it 'download videos from channel' do
-    allow(@worker).to receive(:youtube_dl_list)
-    allow(@worker).to receive(:create_woker)
-    allow(@worker).to receive(:update_status_downloaded)
-
-    expect(@worker.perform([@channel_url])).to eq 'done: created, video download workers'
-  end
-
-  it 'ignore error while download list' do
-    allow(@worker).to receive(:run_youtube_dl).and_raise(RuntimeError)
-
-    expect(@worker.youtube_dl_list([@list_url])).to eq "ignore youtube-dl.rb bug"
   end
 
   context '.youtube_dl_options' do
@@ -61,6 +38,33 @@ RSpec.describe DownloadWorker, type: :worker do
     end
     it 'return alert with wrong format input' do
       expect(@worker.youtube_dl_options('other_format')).to eq 'opus or mp4 format only'
+    end
+  end
+
+  context 'When download batch videos' do
+    it 'download videos from list' do
+      list_url = 'https://www.youtube.com/playlist?list=PLZiftgt33q3MAmFNooSeGaEzI0deHU2DU'
+      allow(@worker).to receive(:create_worker)
+      allow(@worker).to receive(:update_status_downloaded)
+
+      expect{@worker.perform([list_url])}.to change{Video.count}.by 12
+    end
+
+    it 'download videos from channel' do
+      channel_url = 'https://www.youtube.com/channel/UC4nqlRQN1XT_sExhXihxcQA'
+
+      allow(@worker).to receive(:create_worker)
+      allow(@worker).to receive(:update_status_downloaded)
+
+      expect{@worker.perform([channel_url])}.to change{Video.count}.by 10
+    end
+
+    it 'ignore error while download list' do
+      list_url = 'https://www.youtube.com/playlist?list=PLZiftgt33q3Oea2oVAErUDdtZy1gXO6Zi'
+
+      allow(@worker).to receive(:run_youtube_dl).and_raise(RuntimeError)
+
+      expect(@worker.youtube_dl_list([list_url])).to eq "ignore youtube-dl.rb bug"
     end
   end
 
@@ -101,7 +105,7 @@ RSpec.describe DownloadWorker, type: :worker do
     end
     it ".create_worker" do
       allow(DownloadWorker).to receive(:perform_async).and_return('worker created')
-      expect(@worker.create_woker(@url)).to eq 'worker created'
+      expect(@worker.create_worker(@url)).to eq 'worker created'
     end
   end
 end

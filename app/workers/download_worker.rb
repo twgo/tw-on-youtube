@@ -17,7 +17,7 @@ class DownloadWorker
       yids.each do |yid|
         video_url="https://www.youtube.com/watch?v=#{yid}"
         Video.create(url: video_url, playlist: list_url)
-        create_woker(video_url)
+        create_worker(video_url)
       end
       update_status_downloaded(list_url)
       'done: created, video download workers'
@@ -27,7 +27,7 @@ class DownloadWorker
     end
   end
 
-  def create_woker(video_url)
+  def create_worker(video_url)
     DownloadWorker.perform_async([video_url])
   end
 
@@ -89,6 +89,9 @@ class DownloadWorker
     move_file(params)
     move_file({url: params[:url], data: data, data_format: 'vtt'}) if data_format == 'mp4'
 
+    FileUtils.rm Dir.glob('*.mp4')
+    FileUtils.rm Dir.glob('*.opus')
+    FileUtils.rm Dir.glob('*.vtt')
     'done: move_files'
   end
 
