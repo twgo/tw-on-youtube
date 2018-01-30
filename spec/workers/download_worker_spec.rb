@@ -24,7 +24,6 @@ RSpec.describe DownloadWorker, type: :worker do
   end
 
   it 'download videos from list' do
-    allow(@worker).to receive(:youtube_dl_list)
     allow(@worker).to receive(:create_woker)
     allow(@worker).to receive(:update_status_downloaded)
 
