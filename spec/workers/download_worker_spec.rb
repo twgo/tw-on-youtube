@@ -47,7 +47,7 @@ RSpec.describe DownloadWorker, type: :worker do
       allow(@worker).to receive(:create_worker)
       allow(@worker).to receive(:update_status_downloaded)
 
-      expect{@worker.perform([list_url])}.to change{Video.count}.by 12
+      expect{@worker.perform([list_url])}.to change{Video.count}.by_at_least 12
       FileUtils.rm Dir.glob('*.mp4')
     end
 
@@ -57,7 +57,7 @@ RSpec.describe DownloadWorker, type: :worker do
       allow(@worker).to receive(:create_worker)
       allow(@worker).to receive(:update_status_downloaded)
 
-      expect{@worker.perform([channel_url])}.to change{Video.count}.by 10
+      expect{@worker.perform([channel_url])}.to change{Video.count}.by_at_least 10
       FileUtils.rm Dir.glob('*.mp4')
     end
 
