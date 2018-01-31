@@ -48,6 +48,7 @@ RSpec.describe DownloadWorker, type: :worker do
       allow(@worker).to receive(:update_status_downloaded)
 
       expect{@worker.perform([list_url])}.to change{Video.count}.by 12
+      FileUtils.rm Dir.glob('*.mp4')
     end
 
     it 'download videos from channel' do
@@ -57,6 +58,7 @@ RSpec.describe DownloadWorker, type: :worker do
       allow(@worker).to receive(:update_status_downloaded)
 
       expect{@worker.perform([channel_url])}.to change{Video.count}.by 10
+      FileUtils.rm Dir.glob('*.mp4')
     end
 
     it 'ignore error while download list' do
@@ -65,6 +67,7 @@ RSpec.describe DownloadWorker, type: :worker do
       allow(@worker).to receive(:run_youtube_dl).and_raise(RuntimeError)
 
       expect(@worker.youtube_dl_list([list_url])).to eq "ignore youtube-dl.rb bug"
+      FileUtils.rm Dir.glob('*.mp4')
     end
   end
 

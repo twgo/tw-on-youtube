@@ -89,9 +89,7 @@ class DownloadWorker
     move_file(params)
     move_file({url: params[:url], data: data, data_format: 'vtt'}) if data_format == 'mp4'
 
-    FileUtils.rm Dir.glob('*.mp4')
-    FileUtils.rm Dir.glob('*.opus')
-    FileUtils.rm Dir.glob('*.vtt')
+    clean_download_folder
     'done: move_files'
   end
 
@@ -166,5 +164,11 @@ class DownloadWorker
     video = Video.find_by(url: url)
     vtts = video.subtitle_downloaded || ''
     video.update_attributes(subtitle_downloaded: vtts + "#{lang} ")
+  end
+
+  def clean_download_folder
+    FileUtils.rm Dir.glob('*.mp4')
+    FileUtils.rm Dir.glob('*.opus')
+    FileUtils.rm Dir.glob('*.vtt')
   end
 end
