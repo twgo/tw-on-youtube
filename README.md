@@ -13,7 +13,7 @@
 - 採mp4，為通用格式
 
 ## 批次下載影片
-- 可輸入含 `list=` 連結，會根據給的網址下的影片通抓
+- 可輸入含 `list=` 或 `/channel/` 連結，會根據給的網址下的影片通抓
 
 ## 聲音轉檔
 - 採opus：由於原始音多opus, m4a 直轉 youtube-dl 轉wav 大倍10，故取opus為聲音格式
@@ -31,10 +31,10 @@
 # 結構說明
 
 ## DownloadWorker
-輸入影片位址後將於後台下載影片
+輸入影片位址後將於背景後台下載影片
 
 ## View
-- 輸入影片來源：目前限 youtube 單片與清單(playlist)
+- 輸入影片來源：目前限 youtube 單片、清單(playlist)與頻道(channel)
 
 ## Controller
 - 新增影片
