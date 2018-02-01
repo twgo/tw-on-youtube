@@ -65,7 +65,7 @@ class DownloadWorker
   end
 
   def youtube_dl(url, options)
-    run_youtube_dl(url, options)
+    data = run_youtube_dl(url, options)
     log_data(data, url)
     update_status_downloaded(url)
   rescue => e
@@ -110,17 +110,5 @@ class DownloadWorker
 
   def update_status_downloaded(url)
     Video.find_by(url: url).update(status: 'downloaded')
-  end
-
-  def update_format_downloaded(url, data_format)
-    video = Video.find_by(url: url)
-    formats = video.format_downloaded || ''
-    video.update_attributes(format_downloaded: formats + "#{data_format} ")
-  end
-
-  def update_subtitle_downloaded(url, lang)
-    video = Video.find_by(url: url)
-    vtts = video.subtitle_downloaded || ''
-    video.update_attributes(subtitle_downloaded: vtts + "#{lang} ")
   end
 end
