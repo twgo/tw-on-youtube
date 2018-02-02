@@ -43,7 +43,7 @@ class DownloadWorker
       'audio-format': 'opus',
       'audio-quality': 0,
       'output': 'public/download/opus/%(uploader_id)s/%(title)s-%(id)s.%(ext)s',
-      'download-archive': 'public/download/opus-archive.txt'
+      'download-archive': 'public/download/opus-archive.txt',
       }
     elsif data_format == 'mp4'
       {
@@ -51,7 +51,7 @@ class DownloadWorker
         'format': 'mp4',
         'sub-lang': 'zh-Hant,zh-Hans,en',
         'output': 'public/download/mp4/%(uploader_id)s/%(title)s-%(id)s.%(ext)s',
-        'download-archive': 'public/download/mp4-archive.txt'
+        'download-archive': 'public/download/mp4-archive.txt',
       }
     else
       'opus or mp4 format only'
