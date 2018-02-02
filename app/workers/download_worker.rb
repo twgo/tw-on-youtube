@@ -11,16 +11,10 @@ class DownloadWorker
     if (url.include?('list=') || url.include?('/channel/'))
       list_url = url
 
-      youtube_dl_list(list_url)
+      ['opus', 'mp4'].each { |data_format| youtube_dl_list(list_url, data_format)}
 
-      yids = Dir[File.join("*.mp4")].map { |name| name.split('.')[-2][-11..-1]}
-      yids.each do |yid|
-        video_url="https://www.youtube.com/watch?v=#{yid}"
-        Video.create(url: video_url, playlist: list_url)
-        create_worker(video_url)
-      end
       update_status_downloaded(list_url)
-      'done: created, video download workers'
+      'done: download list/channel'
     else
       download_data(params)
       'done: download video'
@@ -37,14 +31,7 @@ class DownloadWorker
 
     data_formats.each do |data_format|
       options = youtube_dl_options(data_format)
-
-      data = youtube_dl(url, options)
-
-      params = params.merge(data: data, data_format: data_format)
-
-      move_files(params)
-      log_data(data, url)
-      update_status_downloaded(url)
+      youtube_dl(url, options)
     end
     'done: download_data'
   end
@@ -54,68 +41,39 @@ class DownloadWorker
       {
       'extract-audio': true,
       'audio-format': 'opus',
-      'audio-quality': 0
+      'audio-quality': 0,
+      'output': 'public/download/opus/%(uploader_id)s/%(title)s-%(id)s.%(ext)s',
+      'download-archive': 'public/download/opus-archive.txt',
       }
     elsif data_format == 'mp4'
       {
         'write-sub': true,
         'format': 'mp4',
-        'sub-lang': 'zh-Hant,zh-Hans,en'
+        'sub-lang': 'zh-Hant,zh-Hans,en',
+        'output': 'public/download/mp4/%(uploader_id)s/%(title)s-%(id)s.%(ext)s',
+        'download-archive': 'public/download/mp4-archive.txt',
       }
     else
       'opus or mp4 format only'
     end
   end
 
-  def youtube_dl_list(list_url)
-    run_youtube_dl(list_url, {'format': 'mp4'})
+  def youtube_dl_list(list_url, data_format)
+    run_youtube_dl(list_url, youtube_dl_options(data_format))
   rescue
     "ignore youtube-dl.rb bug"
   end
 
   def youtube_dl(url, options)
-    run_youtube_dl(url, options)
+    data = run_youtube_dl(url, options)
+    log_data(data, url)
+    update_status_downloaded(url)
   rescue => e
     Video.find_by(url: url).update(status: "Download Fail, YoutubeDL error: #{e}")
   end
 
   def run_youtube_dl(url, options)
     YoutubeDL.download url, options
-  end
-
-  def move_files(params={})
-    data = params[:data]
-    data_format = params[:data_format]
-    move_file(params)
-    move_file({url: params[:url], data: data, data_format: 'vtt'}) if data_format == 'mp4'
-
-    clean_download_folder
-    'done: move_files'
-  end
-
-  def	move_file(params={})
-    data = params[:data]
-    url = params[:url]
-    data_format = params[:data_format]
-    @downloaded_files = data.filename.split('.')[-2]
-    if data_format == 'vtt'
-      vtts = Dir[File.join("*.vtt")]
-      vtts.each do |vtt|
-        lang = vtt.split('.')[-2]
-        update_subtitle_downloaded(url, lang)
-        uploader_dirname = File.dirname("#{DOCS_PATH}/vtt/#{data.uploader_id}/#{vtt}")
-        FileUtils.mkdir_p(uploader_dirname)
-        FileUtils.mv("#{vtt}", "#{DOCS_PATH}/vtt/#{data.uploader_id}/#{vtt}")
-      end
-      update_format_downloaded(url, 'vtt')
-    else
-      uploader_dirname = File.dirname("#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{@downloaded_files}")
-      FileUtils.mkdir_p(uploader_dirname)
-      FileUtils.mv("#{@downloaded_files}.#{data_format}", "#{DOCS_PATH}/#{data_format}/#{data.uploader_id}/#{@downloaded_files}.#{data_format}")
-
-      update_format_downloaded(url, data_format)
-      'done: move_file'
-    end
   end
 
   def log_data(data, url)
@@ -152,23 +110,5 @@ class DownloadWorker
 
   def update_status_downloaded(url)
     Video.find_by(url: url).update(status: 'downloaded')
-  end
-
-  def update_format_downloaded(url, data_format)
-    video = Video.find_by(url: url)
-    formats = video.format_downloaded || ''
-    video.update_attributes(format_downloaded: formats + "#{data_format} ")
-  end
-
-  def update_subtitle_downloaded(url, lang)
-    video = Video.find_by(url: url)
-    vtts = video.subtitle_downloaded || ''
-    video.update_attributes(subtitle_downloaded: vtts + "#{lang} ")
-  end
-
-  def clean_download_folder
-    FileUtils.rm Dir.glob('*.mp4')
-    FileUtils.rm Dir.glob('*.opus')
-    FileUtils.rm Dir.glob('*.vtt')
   end
 end
