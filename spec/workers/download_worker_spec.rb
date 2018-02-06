@@ -4,6 +4,7 @@ RSpec.describe DownloadWorker, type: :worker do
     @url = 'https://www.youtube.com/watch?v=W0jcK0CRKTY'
     @url2 = 'https://www.youtube.com/watch?v=IstxG6gapQM'
     @url3 = 'https://www.youtube.com/watch?v=7Ird1A7q_R8'
+    @url4 = 'https://www.youtube.com/watch?v=zdbAL1J0SKM' # 簡繁英字幕
 
     @worker = DownloadWorker.new
 
@@ -24,7 +25,7 @@ RSpec.describe DownloadWorker, type: :worker do
 
   context 'When download batch videos' do
     it 'download videos from list' do
-      list_url = 'https://www.youtube.com/playlist?list=PLZiftgt33q3MAmFNooSeGaEzI0deHU2DU'
+      list_url = 'https://www.youtube.com/playlist?list=PLZiftgt33q3Oea2oVAErUDdtZy1gXO6Zi'
       allow(@worker).to receive(:create_worker)
       allow(@worker).to receive(:update_status_downloaded)
 
@@ -74,6 +75,14 @@ RSpec.describe DownloadWorker, type: :worker do
     it ".create_worker" do
       allow(DownloadWorker).to receive(:perform_async).and_return('worker created')
       expect(@worker.create_worker(@url)).to eq 'worker created'
+    end
+    it ".update_format_downloaded" do
+      @worker.update_format_downloaded(@url3, 'mp4')
+      expect(Video.find_by(url: @url3).format_downloaded).to eq 'mp4 '
+    end
+    it ".update_subtitle_downloaded" do
+      @worker.update_subtitle_downloaded(@url4, 'en')
+      expect(Video.find_by(url: @url4).subtitle_downloaded).to eq 'en '
     end
   end
 end

@@ -2,7 +2,7 @@ class VideosController < ApplicationController
   before_action :set_video, only: [:show]
 
   def get_vtt
-    send_file "#{Rails.root}/public/download/vtt/#{params[:u]}/#{params[:p]}.vtt" , type: 'text/plain; charset=utf-8'
+    send_file "#{Rails.root}/public/download/mp4/#{params[:u]}/#{params[:p]}.vtt" , type: 'text/plain; charset=utf-8'
   end
 
   # GET /videos

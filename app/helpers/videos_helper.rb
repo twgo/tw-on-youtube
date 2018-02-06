@@ -6,7 +6,7 @@ module VideosHelper
       path = File.join(Rails.root, 'public', 'download', "#{data_format}", "#{video.uploader_id}")
       data_name = file_name video.filename
       if data_format == 'vtt'
-        vtts = Dir["#{path}/*.vtt"]
+        vtts = Dir["public/download/mp4/#{video.uploader_id}/*.vtt"]
         vtts.map do |vtt|
           vtt_name = file_name vtt
           show_vtt = vtt_name.split('.')[-1]
