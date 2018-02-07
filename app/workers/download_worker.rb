@@ -7,17 +7,16 @@ class DownloadWorker
 
   def perform(*args)
     url = args[0][0]
-    params = {data_formats: ['opus', 'mp4'], url: url}
+    params = {data_formats: ['mp4', 'opus'], url: url}
     if (url.include?('list=') || url.include?('/channel/'))
       list_url = url
-
-      ['opus', 'mp4'].each do |data_format|
+      ['mp4', 'opus'].each do |data_format|
         yids_path = "public/download/#{data_format}-archive.txt"
         yids_before_dl = read_yids(yids_path)
         youtube_dl_list(list_url, data_format)
         yids_after_dl = read_yids(yids_path)
         yids = yids_after_dl - yids_before_dl
-        yids.each { |yid| update_video_info(yid) }
+        ( yids.each { |yid| update_video_info(yid, data_format) } ) if yids.any?
       end
       update_status_downloaded(list_url)
       'done: download list/channel'
@@ -25,10 +24,7 @@ class DownloadWorker
       download_data(params)
       'done: download video'
     end
-  end
-
-  def create_worker(video_url)
-    DownloadWorker.perform_async([video_url])
+    Video.where(status: 'downloading').delete_all
   end
 
   def download_data(params={})
@@ -36,11 +32,10 @@ class DownloadWorker
     data_formats = params[:data_formats]
 
     data_formats.each do |data_format|
-      options = youtube_dl_options(data_format)
-      data = youtube_dl(url, options)
       update_status_downloaded(url)
+      data = youtube_dl(url, youtube_dl_options(data_format))
+      check_subtitle(data) if data_format == 'mp4'
       update_format_downloaded(url, data_format)
-      check_subtitle(data) if (data_format == 'mp4')
     end
     'done: download_data'
   end
@@ -77,21 +72,20 @@ class DownloadWorker
   def youtube_dl(url, options)
     data = run_youtube_dl(url, options)
     log_data(data, url)
-    data
+    return data
   rescue => e
-    Video.find_by(url: url).update(status: "Download Fail, YoutubeDL error: #{e}")
+    video = Video.find_by(url: url) || Video.create(url: url)
+    video.update(status: "Download Fail, YoutubeDL error: #{e}")
   end
 
   def run_youtube_dl(url, options)
     YoutubeDL.download url, options
   end
 
-  def	update_video_info(yid)
+  def	update_video_info(yid, data_format)
     url = "https://www.youtube.com/watch?v=#{yid}"
-    data = youtube_dl(url, youtube_dl_options('mp4'))
-    data_formats = ['mp4', 'opus']
-    data_formats.each { |data_format| update_format_downloaded(url, data_format)}
-    check_subtitle(data)
+    params = {data_formats: ['mp4', 'opus'], url: url}
+    download_data(params)
     'done: update_video_info'
   end
 
@@ -128,7 +122,8 @@ class DownloadWorker
   end
 
   def update_status_downloaded(url)
-    Video.find_by(url: url).update(status: 'downloaded')
+    video = Video.find_by(url: url) || Video.create(url: url)
+    video.update_attributes(status: 'downloaded')
   end
 
   def update_format_downloaded(url, data_format)
@@ -138,7 +133,7 @@ class DownloadWorker
   end
 
   def check_subtitle(data)
-    vtts = Dir[File.join("#{DOCS_PATH}/mp4/#{data.uploader_id}/*.vtt")]
+    vtts = Dir[File.join("public/download/mp4/#{data.uploader_id}/*.vtt")]
     url = data.url
     if vtts.any?
       vtts.each do |vtt|
@@ -159,7 +154,7 @@ class DownloadWorker
     yids = []
     File.open(path, "r") do |f|
       f.each_line do |line|
-        yids << line
+        yids << (line.remove("youtube ").chomp)
       end
     end rescue nil
     yids
