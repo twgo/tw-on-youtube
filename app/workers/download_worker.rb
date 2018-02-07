@@ -33,8 +33,7 @@ class DownloadWorker
 
     data_formats.each do |data_format|
       update_status_downloaded(url)
-      data = youtube_dl(url, youtube_dl_options(data_format))
-      check_subtitle(data) if data_format == 'mp4'
+      youtube_dl(url, youtube_dl_options(data_format))
       update_format_downloaded(url, data_format)
     end
     'done: download_data'
@@ -72,7 +71,7 @@ class DownloadWorker
   def youtube_dl(url, options)
     data = run_youtube_dl(url, options)
     log_data(data, url)
-    return data
+    check_subtitle(data)
   rescue => e
     video = Video.find_by(url: url) || Video.create(url: url)
     video.update(status: "Download Fail, YoutubeDL error: #{e}")
@@ -129,7 +128,7 @@ class DownloadWorker
   def update_format_downloaded(url, data_format)
     video = Video.find_by(url: url) || Video.create(url: url)
     formats = video.format_downloaded || ''
-    video.update_attributes(format_downloaded: formats + "#{data_format} ")
+    video.update_attributes(format_downloaded: formats + "#{data_format} ") unless formats.include? (data_format)
   end
 
   def check_subtitle(data)
@@ -147,7 +146,7 @@ class DownloadWorker
   def update_subtitle_downloaded(url, lang)
     video = Video.find_by(url: url) || Video.create(url: url)
     vtts = video.subtitle_downloaded || ''
-    video.update_attributes(subtitle_downloaded: vtts + "#{lang} ")
+    video.update_attributes(subtitle_downloaded: vtts + "#{lang} ") unless vtts.include? (lang)
   end
 
   def read_yids(path)
