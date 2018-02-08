@@ -19,12 +19,13 @@ class DownloadWorker
         ( yids.each { |yid| update_video_info(yid, data_format) } ) if yids.any?
       end
       update_status_downloaded(list_url)
+      Video.where(status: 'downloading').delete_all
       'done: download list/channel'
     else
       download_data(params)
+      Video.where(status: 'downloading').delete_all
       'done: download video'
     end
-    Video.where(status: 'downloading').delete_all
   end
 
   def download_data(params={})
