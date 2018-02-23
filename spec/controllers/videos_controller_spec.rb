@@ -1,5 +1,11 @@
 require 'rails_helper'
 RSpec.describe VideosController, type: :controller do
+  describe "GET #redownload" do
+    it "returns a success response" do
+      get :redownload
+      expect(response).to redirect_to videos_path
+    end
+  end
   describe "GET #get_vtt" do
     it "returns a success response" do
       allow(subject).to receive(:send_file)
