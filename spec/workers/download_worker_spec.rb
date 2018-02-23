@@ -75,10 +75,12 @@ RSpec.describe DownloadWorker, type: :worker do
     it ".update_format_downloaded" do
       @worker.update_format_downloaded(@url3, 'mp4')
       expect(Video.find_by(url: @url3).format_downloaded).to eq 'mp4 '
+      # 加空白是為了隔開不同的檔案類型
     end
     it ".update_subtitle_downloaded" do
       @worker.update_subtitle_downloaded(@url4, 'en')
       expect(Video.find_by(url: @url4).subtitle_downloaded).to eq 'en '
+      # 加空白是為了隔開不同的語系
     end
   end
 end
