@@ -38,10 +38,8 @@ class VideosController < ApplicationController
   end
 
   def redownload
-    if params[:url]
-      Video.find_by(url: params[:url]).update(status: 'downloading')
-      DownloadWorker.perform_async([params[:url]])
-    end
+    Video.find_by(url: params[:url]).update(status: 'downloading')
+    DownloadWorker.perform_async([params[:url]])
     redirect_to videos_path, notice: 'Video redownload scheduled'
   end
 
