@@ -2,7 +2,7 @@ class VideosController < ApplicationController
   before_action :set_video, only: [:show]
 
   def get_vtt
-    send_file "#{Rails.root}/public/download/vtt/#{params[:u]}/#{params[:p]}.vtt" , type: 'text/plain; charset=utf-8'
+    send_file "#{Rails.root}/public/download/mp4/#{params[:u]}/#{params[:p]}.vtt" , type: 'text/plain; charset=utf-8'
   end
 
   # GET /videos
@@ -28,13 +28,19 @@ class VideosController < ApplicationController
       if @video.save
         Video.last.update(status: 'downloading')
         DownloadWorker.perform_async([@video.url])
-        format.html { redirect_to videos_path, notice: 'Video was successfully created.' }
+        format.html { redirect_to videos_path, notice: 'Video download scheduled.' }
         format.json { render :show, status: :created, location: @video }
       else
         format.html { render :new }
         format.json { render json: @video.errors, status: :unprocessable_entity }
       end
     end
+  end
+
+  def redownload
+    Video.find_by(url: params[:url]).update(status: 'downloading')
+    DownloadWorker.perform_async([params[:url]])
+    redirect_to videos_path, notice: 'Video redownload scheduled'
   end
 
   private

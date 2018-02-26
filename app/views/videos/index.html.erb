@@ -22,7 +22,10 @@
       <tr>
         <td><%= video.status %></td>
         <% if (video.status && (video.status =='downloaded')) %>
-          <td><%= link_to (video.title.present? ? video.title.truncate(10) : '影片集'), video.url, target: '_blank', title: video.title %></td>
+          <td>
+            <%= link_to (video.title.nil? ? '🔄' : ''), redownload_videos_path(url: video.url) %>
+            <%= link_to (video.title.present? ? video.title.truncate(15) : video.url), video.url, target: '_blank' %>
+          </td>
           <td><%= video.yid %></td>
           <td><%= Time.at(video.duration.to_i).utc.strftime("%H:%M:%S") %></td>
           <td><%= video.uploader %></td>
@@ -31,7 +34,7 @@
           <td><%= video.title.present? ? file_link(video) : '' %></td>
           <td><%= video.created_at.localtime.to_formatted_s(:short) %></td>
         <% else %>
-          <td><%= link_to video.url.truncate(10), video.url, target: '_blank' %></td>
+          <td><%= link_to video.url, video.url, target: '_blank' %></td>
         <% end %>
       </tr>
     <% end %>
