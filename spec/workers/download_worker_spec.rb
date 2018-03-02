@@ -61,9 +61,9 @@ RSpec.describe DownloadWorker, type: :worker do
       expect(video_status).to eq "Download Fail, YoutubeDL error: RuntimeError"
     end
     it "download a video: save, move, and log data" do
-      p url = 'https://www.youtube.com/watch?v=8BUig7mcFsw'
-      p Video.create(url: url)
-      p @worker.download_data({data_formats: ['mp4', 'opus'], url: url})
+      url = 'https://www.youtube.com/watch?v=8BUig7mcFsw'
+      Video.create(url: url)
+      @worker.download_data({data_formats: ['mp4', 'opus'], url: url})
 
       expect(File.exist?("#{video_path}")).to eq true
       expect(File.exist?("#{audio_path}")).to eq true
