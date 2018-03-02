@@ -44,7 +44,7 @@ class DownloadWorker
       'extract-audio': true,
       'audio-format': 'opus',
       'audio-quality': 0,
-      'output': 'public/download/opus/%(uploader_id)s/%(title)s-%(id)s.%(ext)s',
+      'output': 'public/download/opus/%(uploader_id)s/%(title)s-%(id)s.opus',
       'download-archive': 'public/download/opus-archive.txt',
       }
     elsif data_format == 'mp4'

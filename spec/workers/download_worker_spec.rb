@@ -49,20 +49,21 @@ RSpec.describe DownloadWorker, type: :worker do
   end
 
   context "when download_data with youtube-dl" do
-    let(:video_status) {Video.find_by(url: @url).status}
-    let(:video_path){'./public/download/mp4/UCJ0B-4NXjBsF0nKzW9XBmbA/1 second video-8BUig7mcFsw.mp4'}
-    let(:audio_path){'./public/download/opus/UCJ0B-4NXjBsF0nKzW9XBmbA/1 second video-8BUig7mcFsw.opus'}
-    let(:subtitle_path){'./public/download/mp4/UCJ0B-4NXjBsF0nKzW9XBmbA/1 second video-8BUig7mcFsw.en.vtt'}
+    url = 'https://www.youtube.com/watch?v=8BUig7mcFsw'
+    let(:video_status) {Video.find_by(url: url).status}
+    let(:video_path){'./public/download/mp4/NA/Video de 1 Segundo-8BUig7mcFsw.mp4'}
+    let(:audio_path){'./public/download/opus/NA/Video de 1 Segundo-8BUig7mcFsw.opus'}
+    let(:subtitle_path){'./public/download/mp4/NA/Video de 1 Segundo-8BUig7mcFsw.en.vtt'}
 
     it "raise error if youtube-dl not work" do
       allow(@worker).to receive(:run_youtube_dl).and_raise(RuntimeError)
-      @worker.youtube_dl(@url, {})
+      @worker.youtube_dl(url, {})
       expect(video_status).to eq "Download Fail, YoutubeDL error: RuntimeError"
     end
     it "download a video: save, move, and log data" do
-      url = 'https://www.youtube.com/watch?v=8BUig7mcFsw'
-      Video.create(url: url)
-      @worker.download_data({data_formats: ['mp4', 'opus'], url: url})
+      p url = 'https://www.youtube.com/watch?v=8BUig7mcFsw'
+      p Video.create(url: url)
+      p @worker.download_data({data_formats: ['mp4', 'opus'], url: url})
 
       expect(File.exist?("#{video_path}")).to eq true
       expect(File.exist?("#{audio_path}")).to eq true
