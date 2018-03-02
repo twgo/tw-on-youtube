@@ -20,10 +20,10 @@
   <tbody>
     <% @videos.each do |video| %>
       <tr>
-        <td><%= video.status %></td>
+        <td><%= link_to video.status.truncate(15),'' , title: video.status %></td>
         <% if (video.status && (video.status =='downloaded')) %>
           <td>
-            <%= link_to (video.title.nil? ? '🔄' : ''), redownload_videos_path(url: video.url) %>
+            <%= link_to ( ((video.url.include? '/channel/') || (video.url.include? 'list=')) ? '🔄' : ''), redownload_videos_path(url: video.url) %>
             <%= link_to (video.title.present? ? video.title.truncate(15) : video.url), video.url, target: '_blank' %>
           </td>
           <td><%= video.yid %></td>
