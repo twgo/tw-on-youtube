@@ -51,9 +51,9 @@ RSpec.describe DownloadWorker, type: :worker do
   context "when download_data with youtube-dl" do
     url = 'https://www.youtube.com/watch?v=8BUig7mcFsw'
     let(:video_status) {Video.find_by(url: url).status}
-    let(:video_path){'./public/download/mp4/NA/Video de 1 Segundo-8BUig7mcFsw.mp4'}
-    let(:audio_path){'./public/download/opus/NA/Video de 1 Segundo-8BUig7mcFsw.opus'}
-    let(:subtitle_path){'./public/download/mp4/NA/Video de 1 Segundo-8BUig7mcFsw.en.vtt'}
+    let(:video_path){'./public/download/mp4/Bruno&Joel/Video de 1 Segundo-8BUig7mcFsw.mp4'}
+    let(:audio_path){'./public/download/opus/Bruno&Joel/Video de 1 Segundo-8BUig7mcFsw.opus'}
+    let(:subtitle_path){'./public/download/mp4/Bruno&Joel/Video de 1 Segundo-8BUig7mcFsw.en.vtt'}
 
     it "raise error if youtube-dl not work" do
       allow(@worker).to receive(:run_youtube_dl).and_raise(RuntimeError)
