@@ -44,7 +44,7 @@ class DownloadWorker
       'extract-audio': true,
       'audio-format': 'opus',
       'audio-quality': 0,
-      'output': 'public/download/opus/%(uploader_id)s/%(title)s-%(id)s.opus',
+      'output': 'public/download/opus/%(uploader)s/%(title)s-%(id)s.opus',
       'download-archive': 'public/download/opus-archive.txt',
       }
     elsif data_format == 'mp4'
@@ -52,7 +52,7 @@ class DownloadWorker
         'write-sub': true,
         'format': 'mp4',
         'sub-lang': 'zh-Hant,zh-Hans,en',
-        'output': 'public/download/mp4/%(uploader_id)s/%(title)s-%(id)s.%(ext)s',
+        'output': 'public/download/mp4/%(uploader)s/%(title)s-%(id)s.%(ext)s',
         'download-archive': 'public/download/mp4-archive.txt',
       }
     else
@@ -96,7 +96,6 @@ class DownloadWorker
       duration: data.duration,
       filename: data.filename,
       uploader: data.uploader,
-      uploader_id: data.uploader_id,
       upload_date: data.upload_date,
       abr: data.abr,
       acodec: data.acodec,
@@ -116,6 +115,8 @@ class DownloadWorker
     # playlist_title: data.playlist_title,
     # playlist_uploader: data.playlist_uploader,
     # playlist_uploader_id:	data.playlist_uploader_id,
+    # uploader_id: data.uploader_id,
+
     'done: log_data'
   end
 
@@ -131,7 +132,7 @@ class DownloadWorker
   end
 
   def check_subtitle(data)
-    vtts = Dir[File.join("public/download/mp4/#{data.uploader_id}/*.vtt")]
+    vtts = Dir[File.join("public/download/mp4/#{data.uploader}/*.vtt")]
     url = data.url
     if vtts.any?
       vtts.each do |vtt|
