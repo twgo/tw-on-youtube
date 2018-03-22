@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/twgo/tw-on-youtube/badge.svg?branch=master)](https://coveralls.io/github/twgo/tw-on-youtube?branch=master)  [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/twgo/Lobby) [![](https://img.shields.io/docker/build/leo424y/tw-on-youtube.svg)](https://hub.docker.com/r/leo424y/tw-on-youtube/)
 
 # 安裝
-[一鍵啟動](https://github.com/twgo/tw-on-youtube/wiki/%E5%AE%89%E8%A3%9Ddocker-compose%E4%B8%80%E9%8D%B5%E5%95%9F%E7%94%A8%E6%9C%8D%E5%8B%99)
+[一鍵啟動](https://github.com/twgo/tw-on-youtube/wiki/%E5%AE%89%E8%A3%9Ddocker-compose%E4%B8%80%E9%8D%B5%E5%95%9F%E7%94%A8-Ruby-on-Rails-%E6%9C%8D%E5%8B%99)
 
 # 專案目的
 本專案利用 youtube-dl 取得線上聲音資源以訓練語音辨識
