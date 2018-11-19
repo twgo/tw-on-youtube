@@ -2,8 +2,32 @@
 [![Build](https://travis-ci.org/twgo/tw-on-youtube.svg?branch=master)](https://travis-ci.org/twgo/tw-on-youtube)
 [![Coverage Status](https://coveralls.io/repos/github/twgo/tw-on-youtube/badge.svg?branch=master)](https://coveralls.io/github/twgo/tw-on-youtube?branch=master)  [![Gitter chat](https://badges.gitter.im/gitterHQ/gitter.png)](https://gitter.im/twgo/Lobby) [![](https://img.shields.io/docker/build/leo424y/tw-on-youtube.svg)](https://hub.docker.com/r/leo424y/tw-on-youtube/)
 
-# 安裝
+# 安裝準備
 [一鍵啟動](https://github.com/twgo/tw-on-youtube/wiki/%E5%AE%89%E8%A3%9Ddocker-compose%E4%B8%80%E9%8D%B5%E5%95%9F%E7%94%A8-Ruby-on-Rails-%E6%9C%8D%E5%8B%99)
+
+# 啟動
+clone 專案
+git clone https://github.com/twgo/tw-on-youtube.git
+啟動 docker.app 在專案根目錄
+docker-compose build
+docker-compose run web rails db:create
+docker-compose run web rails db:migrate RAILS_ENV=development
+docker-compose up -d
+應能一鍵啟用服務
+可至
+localhost:3000
+進行操作
+
+# 終止
+docker-compose down
+可順利關閉
+若連不上可能是上次 ctrl c 關掉不順利
+可至tmp/pids/ 刪掉 server.pid
+接著重跑
+docker-compose up
+即可一鍵啟用
+
+
 
 # 專案目的
 本專案利用 youtube-dl 取得線上聲音資源以訓練語音辨識
