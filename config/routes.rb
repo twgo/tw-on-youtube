@@ -1,4 +1,7 @@
 Rails.application.routes.draw do
+  require 'sidekiq/web'
+  mount Sidekiq::Web => '/s'
+
   root 'videos#new'
 
   resources :videos, only: %i[index new create] do
