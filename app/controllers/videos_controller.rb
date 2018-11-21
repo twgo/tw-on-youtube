@@ -43,6 +43,10 @@ class VideosController < ApplicationController
     redirect_to videos_path, notice: 'Video redownload scheduled'
   end
 
+  def refresh_videos
+    # download links which has channel or list, checkbox to skip download checking!
+  end
+
   private
     # Never trust parameters from the scary internet, only allow the white list through.
     def video_params

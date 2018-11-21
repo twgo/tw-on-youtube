@@ -8,6 +8,7 @@ Rails.application.routes.draw do
     collection do
       get 'get_vtt'
       get 'redownload'
+      get 'refresh_videos'
     end
   end
   # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
