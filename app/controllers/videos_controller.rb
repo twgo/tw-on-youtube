@@ -45,6 +45,11 @@ class VideosController < ApplicationController
 
   def refresh_videos
     # download links which has channel or list, checkbox to skip download checking!
+    videos = Video.where("url LIKE (?) OR url LIKE (?)","%list=%","%channel%")
+    videos.update_all(status: 'downloading')
+    urls = videos.pluck(:url)
+    urls.each { |url| DownloadWorker.perform_async([url])}
+    redirect_to videos_path, notice: 'Video redownload scheduled'
   end
 
   private
