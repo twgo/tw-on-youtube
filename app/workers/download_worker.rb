@@ -7,10 +7,10 @@ class DownloadWorker
 
   def perform(*args)
     url = args[0][0]
-    params = {data_formats: ['mp4', 'opus'], url: url}
+    params = {data_formats: ['mp4', 'wav'], url: url}
     if (url.include?('list=') || url.include?('/channel/'))
       list_url = url
-      ['mp4', 'opus'].each do |data_format|
+      ['mp4', 'wav'].each do |data_format|
         yids_path = "public/download/#{data_format}-archive.txt"
         yids_before_dl = read_yids(yids_path)
         youtube_dl_list(list_url, data_format)
@@ -39,13 +39,13 @@ class DownloadWorker
   end
 
   def youtube_dl_options(data_format)
-    if data_format == 'opus'
+    if data_format == 'wav'
       {
       'extract-audio': true,
-      'audio-format': 'opus',
+      'audio-format': 'wav',
       'audio-quality': 0,
-      'output': 'public/download/opus/%(uploader)s/%(title)s-%(id)s.opus',
-      'download-archive': 'public/download/opus-archive.txt',
+      'output': 'public/download/wav/%(uploader)s/%(title)s-%(id)s.wav',
+      'download-archive': 'public/download/wav-archive.txt',
       }
     elsif data_format == 'mp4'
       {
@@ -56,7 +56,7 @@ class DownloadWorker
         'download-archive': 'public/download/mp4-archive.txt',
       }
     else
-      'opus or mp4 format only'
+      'wav or mp4 format only'
     end
   end
 
@@ -82,7 +82,7 @@ class DownloadWorker
 
   def	update_video_info(yid, data_format)
     url = "https://www.youtube.com/watch?v=#{yid}"
-    params = {data_formats: ['mp4', 'opus'], url: url}
+    params = {data_formats: ['mp4', 'wav'], url: url}
     download_data(params)
     'done: update_video_info'
   end

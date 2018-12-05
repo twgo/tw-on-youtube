@@ -20,7 +20,7 @@ RSpec.describe DownloadWorker, type: :worker do
   end
 
   it 'return alert with wrong format input' do
-    expect(@worker.youtube_dl_options('other_format')).to eq 'opus or mp4 format only'
+    expect(@worker.youtube_dl_options('other_format')).to eq 'wav or mp4 format only'
   end
 
   context 'When download batch videos' do
@@ -52,7 +52,7 @@ RSpec.describe DownloadWorker, type: :worker do
     url = 'https://www.youtube.com/watch?v=8BUig7mcFsw'
     let(:video_status) {Video.find_by(url: url).status}
     let(:video_path){'./public/download/mp4/Bruno&Joel/Video de 1 Segundo-8BUig7mcFsw.mp4'}
-    let(:audio_path){'./public/download/opus/Bruno&Joel/Video de 1 Segundo-8BUig7mcFsw.opus'}
+    let(:audio_path){'./public/download/wav/Bruno&Joel/Video de 1 Segundo-8BUig7mcFsw.wav'}
     let(:subtitle_path){'./public/download/mp4/Bruno&Joel/Video de 1 Segundo-8BUig7mcFsw.en.vtt'}
 
     it "raise error if youtube-dl not work" do
@@ -63,7 +63,7 @@ RSpec.describe DownloadWorker, type: :worker do
     # it "download a video: save, move, and log data" do
     #   url = 'https://www.youtube.com/watch?v=8BUig7mcFsw'
     #   Video.create(url: url)
-    #   @worker.download_data({data_formats: ['mp4', 'opus'], url: url})
+    #   @worker.download_data({data_formats: ['mp4', 'wav'], url: url})
 
     #   expect(File.exist?("#{video_path}")).to eq true
     #   expect(File.exist?("#{audio_path}")).to eq true

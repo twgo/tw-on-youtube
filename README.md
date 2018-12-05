@@ -42,7 +42,7 @@ docker-compose up
 
 ## 聲音轉檔
 
-- 採opus：由於原始音多opus, m4a 直轉 youtube-dl 轉wav 大倍10，故取opus為聲音格式
+- 採 wav：為辨識所需格式
 
 ## 儲存字幕
 
