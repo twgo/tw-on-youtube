@@ -44,7 +44,7 @@ class DownloadWorker
         'extract-audio': true,
         'audio-format': 'wav',
         'audio-quality': 0,
-        'output': 'public/download/wav/%(uploader_id)s/%(uploader_id)s-%(id)s.%(ext)s',
+        'output': 'public/download/wav/%(uploader)s/%(uploader)s-%(id)s.%(ext)s',
         'download-archive': 'public/download/wav-archive.txt',
       }
     elsif data_format == 'mp4'
@@ -52,7 +52,7 @@ class DownloadWorker
         'write-sub': true,
         'format': 'mp4',
         'sub-lang': 'zh-Hant,zh-Hans,en',
-        'output': 'public/download/mp4/%(uploader_id)s/%(uploader_id)s-%(id)s.%(ext)s',
+        'output': 'public/download/mp4/%(uploader)s/%(uploader)s-%(id)s.%(ext)s',
         'download-archive': 'public/download/mp4-archive.txt',
       }
     else
@@ -132,7 +132,7 @@ class DownloadWorker
   end
 
   def check_subtitle(data)
-    vtts = Dir[File.join("public/download/mp4/#{data.uploader_id}/*.vtt")]
+    vtts = Dir[File.join("public/download/mp4/#{data.uploader}/*.vtt")]
     url = data.url
     if vtts.any?
       vtts.each do |vtt|

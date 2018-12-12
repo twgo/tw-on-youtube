@@ -86,5 +86,5 @@ subtitle_downloaded 已下載之字幕語系
 ### 語料格式化規格
 
 - 下載之影片音檔被收錄在資料夾，自動以下列規則命名存檔路徑
-        'output': 'public/download/wav/%(uploader_id)s/%(uploader_id)s%-%(playlist_id)s-%(id)s.%(ext)s',
+        'output': 'public/download/wav/%(uploader)s/%(uploader)s%-%(playlist_id)s-%(id)s.%(ext)s',
 - 下載之影片清單提供下載
