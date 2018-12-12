@@ -4,7 +4,7 @@ module VideosHelper
     links = data_formats.map do |data_format|
       folder = "download/#{data_format}/#{video.uploader_id}"
       path = File.join(Rails.root, 'public', 'download', "#{data_format}", "#{video.uploader_id}")
-      data_name = file_name video.filename
+      data_name = file_name "#{video.uploader_id}-#{video.yid}"
       if data_format == 'vtt'
         vtts = Dir["public/download/mp4/#{video.uploader_id}/*.vtt"]
         vtts.map do |vtt|
