@@ -2,11 +2,13 @@
 
 <h1>Videos</h1>
 <p><%= link_to 'New Video', new_video_path %></p>
-<table>
+<table id = 'datatable-buttons'>
   <thead>
     <tr>
       <th>狀態</th>
       <th>片名</th>
+      <th>清單名稱</th>
+      <th>清單名稱</th>
       <th>識別碼</th>
       <th>片長</th>
       <th>上傳者</th>
@@ -27,6 +29,8 @@
             <%= link_to (video.title.present? ? video.title.truncate(15) : video.url), video.url, target: '_blank' %>
           </td>
           <td><%= video.yid %></td>
+          <td><%= video.playlist_id %></td>
+          <td><%= video.playlist_title %></td>
           <td><%= Time.at(video.duration.to_i).utc.strftime("%H:%M:%S") %></td>
           <td><%= video.uploader %></td>
           <td><%= video.upload_date %></td>
