@@ -78,3 +78,18 @@ subtitle_downloaded 已下載之字幕語系
 ## 討論板
 
 歡迎於 https://gitter.im/twgo/Lobby 留言給我們意見
+
+## 語料格式化
+
+- 為符合辨識用語料需求，下載音檔將格式化成為能被 Kaldi 直接使用之語料，並含對照文件以利查看來源影片
+
+### 語料格式化規格
+
+- 下載之影片音檔被其來源縮寫收錄，亦或由系統自動以youtube id 為命名
+- 例：id/vid.wav
+  - 單支影片為其 id
+  - list 為其 list id
+  - channel 為其 channel id
+- 下載之影片完成後將自動更新清單文件
+  - filetype: csv
+  - column: id, vid, create_date, modify_date, video_date, notes
