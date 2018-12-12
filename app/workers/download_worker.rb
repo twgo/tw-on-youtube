@@ -41,7 +41,6 @@ class DownloadWorker
   def youtube_dl_options(data_format)
     if data_format == 'wav'
       {
-      'ignore-errors': true,
       'extract-audio': true,
       'audio-format': 'wav',
       'audio-quality': 0,
@@ -50,7 +49,6 @@ class DownloadWorker
       }
     elsif data_format == 'mp4'
       {
-        'ignore-errors': true,
         'write-sub': true,
         'format': 'mp4',
         'sub-lang': 'zh-Hant,zh-Hans,en',
