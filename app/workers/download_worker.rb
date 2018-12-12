@@ -44,7 +44,7 @@ class DownloadWorker
         'extract-audio': true,
         'audio-format': 'wav',
         'audio-quality': 0,
-        'output': 'public/download/wav/%(uploader)s/%(uploader)s-%(id)s.%(ext)s',
+        'output': 'public/download/wav/%(uploader_id)s/%(uploader_id)s-%(id)s.%(ext)s',
         'download-archive': 'public/download/wav-archive.txt',
       }
     elsif data_format == 'mp4'
@@ -52,7 +52,7 @@ class DownloadWorker
         'write-sub': true,
         'format': 'mp4',
         'sub-lang': 'zh-Hant,zh-Hans,en',
-        'output': 'public/download/mp4/%(uploader)s/%(uploader)s-%(id)s.%(ext)s',
+        'output': 'public/download/mp4/%(uploader_id)s/%(uploader_id)s-%(id)s.%(ext)s',
         'download-archive': 'public/download/mp4-archive.txt',
       }
     else
@@ -95,7 +95,7 @@ class DownloadWorker
       description: data.description,
       duration: data.duration,
       filename: data.filename,
-      uploader: data.uploader,
+      uploader: data.uploader_id,
       upload_date: data.upload_date,
       abr: data.abr,
       acodec: data.acodec,
