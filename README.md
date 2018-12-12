@@ -85,11 +85,6 @@ subtitle_downloaded 已下載之字幕語系
 
 ### 語料格式化規格
 
-- 下載之影片音檔被其來源縮寫收錄，亦或由系統自動以youtube id 為命名
-- 例：id/vid.wav
-  - 單支影片為其 id
-  - list 為其 list id
-  - channel 為其 channel id
-- 下載之影片完成後將自動更新清單文件
-  - filetype: csv
-  - column: id, vid, create_date, modify_date, video_date, notes
+- 下載之影片音檔被收錄在資料夾，自動以下列規則命名存檔路徑
+  - 'output': 'public/download/%(ext)s/%(channel_id)s/%(channel_id)s%-(playlist_id)s-%(id)s.%(ext)s',
+- 下載之影片清單提供下載

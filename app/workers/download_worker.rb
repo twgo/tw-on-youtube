@@ -41,18 +41,20 @@ class DownloadWorker
   def youtube_dl_options(data_format)
     if data_format == 'wav'
       {
+      'ignore-errors': true,
       'extract-audio': true,
       'audio-format': 'wav',
       'audio-quality': 0,
-      'output': 'public/download/wav/%(uploader)s/%(title)s-%(id)s.wav',
+      'output': 'public/download/%(ext)s/%(channel_id)s/%(channel_id)s%-(playlist_id)s-%(id)s.%(ext)s',
       'download-archive': 'public/download/wav-archive.txt',
       }
     elsif data_format == 'mp4'
       {
+        'ignore-errors': true,
         'write-sub': true,
         'format': 'mp4',
         'sub-lang': 'zh-Hant,zh-Hans,en',
-        'output': 'public/download/mp4/%(uploader)s/%(title)s-%(id)s.%(ext)s',
+        'output': 'public/download/%(ext)s/%(channel_id)s/%(channel_id)s%-(playlist_id)s-%(id)s.%(ext)s',
         'download-archive': 'public/download/mp4-archive.txt',
       }
     else
