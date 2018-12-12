@@ -132,7 +132,7 @@ class DownloadWorker
   end
 
   def check_subtitle(data)
-    vtts = Dir[File.join("public/download/mp4/#{data.uploader}/*.vtt")]
+    vtts = Dir[File.join("public/download/mp4/#{data.channel_id}/*.vtt")]
     url = data.url
     if vtts.any?
       vtts.each do |vtt|
