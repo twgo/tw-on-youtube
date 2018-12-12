@@ -6,20 +6,16 @@
   <thead>
     <tr>
       <th>狀態</th>
-      <% if (video.status && (video.status =='downloaded')) %>
-        <th>片名</th>
-        <th>影片識別碼</th>
-        <th>清單識別碼</th>
-        <th>清單名稱</th>
-        <th>片長</th>
-        <th>上傳者</th>
-        <th>上傳日期</th>
-        <th>KBit/s</th>
-        <th>已下載</th>
-        <th>下載時間</th>
-      <% else %>
-        <th>連結</th>
-      <% end %>
+      <th>片名</th>
+      <th>影片識別碼</th>
+      <th>清單識別碼</th>
+      <th>清單名稱</th>
+      <th>片長</th>
+      <th>上傳者</th>
+      <th>上傳日期</th>
+      <th>KBit/s</th>
+      <th>已下載</th>
+      <th>下載時間</th>
     </tr>
   </thead>
 
@@ -27,23 +23,19 @@
     <% @videos.each do |video| %>
       <tr>
         <td><%= (link_to video.status.truncate(15),'' , title: video.status) if video.status %></td>
-        <% if (video.status && (video.status =='downloaded')) %>
-          <td>
-            <%= link_to ( ((video.url.include? '/channel/') || (video.url.include? 'list=')) ? '🔄' : ''), redownload_videos_path(url: video.url) %>
-            <%= link_to (video.title.present? ? video.title.truncate(15) : video.url), video.url, target: '_blank' %>
-          </td>
-          <td><%= video.yid %></td>
-          <td><%= video.playlist_id %></td>
-          <td><%= video.playlist_title %></td>
-          <td><%= Time.at(video.duration.to_i).utc.strftime("%H:%M:%S") %></td>
-          <td><%= video.uploader %></td>
-          <td><%= video.upload_date %></td>
-          <td><%= video.abr %></td>
-          <td><%= video.title.present? ? file_link(video) : '' %></td>
-          <td><%= video.created_at.localtime.to_formatted_s(:short) %></td>
-        <% else %>
-          <td><%= link_to video.url, video.url, target: '_blank' %></td>
-        <% end %>
+        <td>
+          <%= link_to ( ((video.url.include? '/channel/') || (video.url.include? 'list=')) ? '🔄' : ''), redownload_videos_path(url: video.url) %>
+          <%= link_to (video.title.present? ? video.title.truncate(15) : video.url), video.url, target: '_blank' %>
+        </td>
+        <td><%= video.yid %></td>
+        <td><%= video.playlist_id %></td>
+        <td><%= video.playlist_title %></td>
+        <td><%= Time.at(video.duration.to_i).utc.strftime("%H:%M:%S") %></td>
+        <td><%= video.uploader %></td>
+        <td><%= video.upload_date %></td>
+        <td><%= video.abr %></td>
+        <td><%= video.title.present? ? file_link(video) : '' %></td>
+        <td><%= video.created_at.localtime.to_formatted_s(:short) %></td>
       </tr>
     <% end %>
   </tbody>
