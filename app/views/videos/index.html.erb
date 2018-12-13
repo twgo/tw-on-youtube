@@ -24,7 +24,7 @@
         <td><%= (link_to video.status.truncate(15),'' , title: video.status) if video.status %></td>
         <td>
           <%= link_to ( ((video.url.include? '/channel/') || (video.url.include? 'list=')) ? '🔄' : ''), redownload_videos_path(url: video.url) %>
-          <%= link_to (video.title.present? ? video.title.truncate(15) : video.url), video.url, target: '_blank' %>
+          <%= link_to (video.title.present? ? video.title : video.url), video.url, target: '_blank' %>
         </td>
         <td><%= video.yid %></td>
         <td><%= video.playlist_id %></td>
