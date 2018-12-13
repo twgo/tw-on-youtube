@@ -2,6 +2,12 @@
 
 本專案利用 youtube-dl 取得線上聲音資源以訓練語音辨識
 
+## 安裝 docker
+
+```bash
+apt install docker docker-compose
+```
+
 [一鍵啟動](https://github.com/twgo/tw-on-youtube/wiki/%E5%AE%89%E8%A3%9Ddocker-compose%E4%B8%80%E9%8D%B5%E5%95%9F%E7%94%A8-Ruby-on-Rails-%E6%9C%8D%E5%8B%99)
 
 ## 啟動
