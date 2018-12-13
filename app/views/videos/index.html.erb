@@ -10,6 +10,8 @@
       <th>影片識別碼</th>
       <th>清單識別碼</th>
       <th>清單名稱</th>
+      <th>頻道識別碼</th>
+      <th>頻道名稱</th>
       <th>片長</th>
       <th>上傳者</th>
       <th>上傳日期</th>
@@ -29,6 +31,8 @@
         <td><%= video.yid %></td>
         <td><%= video.playlist_id %></td>
         <td><%= video.playlist_title %></td>
+        <td><%# video.channel_id %></td>
+        <td><%# video.channel %></td>
         <td><%= Time.at(video.duration.to_i).utc.strftime("%H:%M:%S") %></td>
         <td><%= video.uploader %></td>
         <td><%= video.upload_date %></td>
