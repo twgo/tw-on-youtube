@@ -32,6 +32,9 @@ class CreateVideos < ActiveRecord::Migration[5.1]
       t.string :playlist_title
       t.string :playlist_uploader
       t.string :playlist_uploader_id
+      t.string :channel
+      t.string :channel_id
+
 
 
       t.timestamps

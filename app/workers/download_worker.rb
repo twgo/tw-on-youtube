@@ -44,7 +44,7 @@ class DownloadWorker
         'extract-audio': true,
         'audio-format': 'wav',
         'audio-quality': 0,
-        'output': 'public/download/wav/%(channel_id)s/%(channel_id)s_%(id)s.%(ext)s',
+        'output': 'public/download/wav/%(channel_id)s/%(id)s.%(ext)s',
         'download-archive': 'public/download/wav-archive.txt',
       }
     elsif data_format == 'mp4'
@@ -52,7 +52,7 @@ class DownloadWorker
         'write-sub': true,
         'format': 'mp4',
         'sub-lang': 'zh-Hant,zh-Hans,en',
-        'output': 'public/download/mp4/%(channel_id)s/%(channel_id)s_%(id)s.%(ext)s',
+        'output': 'public/download/mp4/%(channel_id)s/%(id)s.%(ext)s',
         'download-archive': 'public/download/mp4-archive.txt',
       }
     else
@@ -101,6 +101,10 @@ class DownloadWorker
       acodec: data.acodec,
       view_count: data.view_count,
       age_limit: data.age_limit,
+      playlist_title: data.playlist_title,
+      playlist_id: data.playlist_id,
+      channel: data.channel,
+      channel_id: data.channel_id,
     )
     # Not all video has..
     # like_count: data.like_count,

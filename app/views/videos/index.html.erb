@@ -31,8 +31,8 @@
         <td><%= video.yid %></td>
         <td><%= video.playlist_id %></td>
         <td><%= video.playlist_title %></td>
-        <td><%# video.channel_id %></td>
-        <td><%# video.channel %></td>
+        <td><%= video.channel_id %></td>
+        <td><%= video.channel %></td>
         <td><%= Time.at(video.duration.to_i).utc.strftime("%H:%M:%S") %></td>
         <td><%= video.uploader %></td>
         <td><%= video.upload_date %></td>
