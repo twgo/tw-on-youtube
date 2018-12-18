@@ -68,33 +68,12 @@ class DownloadWorker
   end
 
   def youtube_dl(url, options)
-    data = youtube_hash.merge( run_youtube_dl(url, options) )
+    data = run_youtube_dl(url, options)
     log_data(data, url)
     check_subtitle(data)
   rescue => e
     video = Video.find_by(url: url) || Video.create(url: url)
     video.update(status: "Download Fail, YoutubeDL error: #{e}")
-  end
-
-  def youtube_hash
-    {
-      yid: nil,
-      title: nil,
-      thumbnail: nil,
-      description: nil,
-      duration: nil,
-      filename: nil,
-      uploader: nil,
-      upload_date: nil,
-      abr: nil,
-      acodec: nil,
-      view_count: nil,
-      age_limit: nil,
-      playlist_title: nil,
-      playlist_id: nil,
-      channel: nil,
-      channel_id: nil
-    }
   end
 
   def run_youtube_dl(url, options)
@@ -122,7 +101,6 @@ class DownloadWorker
       acodec: data.acodec,
       view_count: data.view_count,
       age_limit: data.age_limit,
-      playlist_title: data.playlist_title,
       playlist_id: data.playlist_id,
       channel: data.channel,
       channel_id: data.channel_id,
