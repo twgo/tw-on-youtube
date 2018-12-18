@@ -88,7 +88,8 @@ class DownloadWorker
   end
 
   def log_data(data, url)
-    Video.find_by(url: url).update(
+    video = Video.find_by(url: url)
+    video.update(
       yid: data.id,
       title: data.title,
       thumbnail: data.thumbnail,
@@ -101,10 +102,18 @@ class DownloadWorker
       acodec: data.acodec,
       view_count: data.view_count,
       age_limit: data.age_limit,
-      playlist_id: data.playlist_id,
       channel: data.channel,
       channel_id: data.channel_id,
     )
+    begin
+      video.update(
+        playlist_title: data.playlist_title,
+        playlist_id: data.playlist_id
+      )
+    rescue 
+    end
+
+
     # Not all video has..
     # like_count: data.like_count,
     # dislike_count: data.dislike_count,
