@@ -102,13 +102,13 @@ class DownloadWorker
       acodec: data.acodec,
       view_count: data.view_count,
       age_limit: data.age_limit,
-      channel: data.channel,
       channel_id: data.channel_id,
     )
     begin
       video.update(
         playlist_title: data.playlist_title,
-        playlist_id: data.playlist_id
+        playlist_id: data.playlist_id,
+        channel: data.channel,
       )
     rescue 
     end
