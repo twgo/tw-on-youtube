@@ -27,7 +27,7 @@ function displayContents(contents) {
     var vid = e[2].replace(/\"/g,'')
     var cid = e[4].replace(/\"/g,'')
     if (i> 0 && (cid !== "")  && (vid !== "") ){
-      res += `https://10.32.0.136:3000/download/wav/${cid}/${vid}.wav\n`
+      res += `http://10.32.0.136:3000/download/wav/${cid}/${vid}.wav\n`
     }
   });
   element.value = res;
