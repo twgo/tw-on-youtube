@@ -104,15 +104,6 @@ class DownloadWorker
       age_limit: data.age_limit,
       channel_id: data.channel_id,
     )
-    begin
-      video.update(
-        playlist_title: data.playlist_title,
-        playlist_id: data.playlist_id,
-        channel: data.channel,
-      )
-    rescue 
-    end
-
 
     # Not all video has..
     # like_count: data.like_count,
