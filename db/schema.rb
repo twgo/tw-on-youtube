@@ -43,6 +43,8 @@ ActiveRecord::Schema.define(version: 20180104145920) do
     t.string "playlist_title"
     t.string "playlist_uploader"
     t.string "playlist_uploader_id"
+    t.string "channel"
+    t.string "channel_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["url"], name: "index_videos_on_url"

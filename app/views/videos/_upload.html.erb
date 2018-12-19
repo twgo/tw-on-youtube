@@ -1,0 +1,38 @@
+<%= form_tag("/upload", method: :post) do %>
+  <%= text_area_tag("file-content") %>
+<% end %>
+
+<input type="file" id="file-input" />
+
+<script>
+function readSingleFile(e) {
+  var file = e.target.files[0];
+  if (!file) {
+    return;
+  }
+  var reader = new FileReader();
+  reader.onload = function(e) {
+    var contents = e.target.result;
+    displayContents(contents);
+  };
+  reader.readAsText(file);
+}
+
+function displayContents(contents) {
+  var element = document.getElementById('file-content');
+  var lines = contents.split("\n") 
+  var res = []
+  lines.forEach(function(el, i) {
+    e = el.split(",");
+    var vid = e[2].replace(/\"/g,'')
+    var cid = e[4].replace(/\"/g,'')
+    if (i> 0 && (cid !== "")  && (vid !== "") ){
+      res += `https://10.32.0.136:3000/download/wav/${cid}/${vid}.wav\n`
+    }
+  });
+  element.value = res;
+}
+
+document.getElementById('file-input')
+  .addEventListener('change', readSingleFile, false);
+</script>
