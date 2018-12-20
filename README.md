@@ -94,3 +94,13 @@ subtitle_downloaded 已下載之字幕語系
 - 下載之影片音檔被收錄在資料夾，自動以下列規則命名存檔路徑
         'output': 'public/download/wav/%(uploader)s/%(uploader)s%-%(playlist_id)s-%(id)s.%(ext)s',
 - 下載之影片清單提供下載
+
+### 下載對照清單
+
+- 使用關鍵字過濾後，點選 CSV 可取得清單
+
+### 下載音標
+
+- 首先選擇對照清單
+- 上傳所下載的對照清單
+- 取得音檔來源，可於 command line 下載音檔
