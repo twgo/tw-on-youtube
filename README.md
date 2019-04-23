@@ -8,7 +8,6 @@
 apt install docker docker-compose
 ```
 
-[一鍵啟動](https://github.com/twgo/tw-on-youtube/wiki/%E5%AE%89%E8%A3%9Ddocker-compose%E4%B8%80%E9%8D%B5%E5%95%9F%E7%94%A8-Ruby-on-Rails-%E6%9C%8D%E5%8B%99)
 
 ## 啟動
 
@@ -20,7 +19,7 @@ git clone https://github.com/twgo/tw-on-youtube.git
 cd tw-on-youtube
 docker-compose build
 docker-compose run web rails db:create
-docker-compose run web rails db:migrate RAILS_ENV=development
+docker-compose run web rails db:migrate
 docker-compose up -d
 #可至 localhost:3000 進行操作
 ```
@@ -40,6 +39,7 @@ docker-compose up
 
 ## 下載影片
 
+- 連上 localhost:3000/videos 輸入 youtube 連結
 - 採 mp4，為通用格式
 
 ## 批次下載影片
